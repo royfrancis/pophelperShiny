@@ -1,0 +1,38 @@
+Package: pophelperShiny
+Type: Package
+Title: Tabulate, analyse and visualise admixture proportions from STRUCTURE, TESS, BAPS, ADMIXTURE and tab-delimited q-matrices
+Version: 2.0.0
+Date: 2018-08-13
+Author: Roy Mathew Francis
+Authors@R: person("Roy", "Francis", email = "roy.m.francis@outlook.com",role = c("aut", "cre"))
+Maintainer: Roy Mathew Francis <roy.m.francis@outlook.com>
+Description: Interactive interface to pophelper using shiny web framework.
+URL: https://github.com/royfrancis/pophelperShiny
+Depends:
+    R(>= 3.5.0)
+Imports:
+    Cairo,
+    colourpicker,
+    dplyr,
+    DT,
+    fields,
+    ggplot2,
+    gridExtra,
+    gtable,
+    highcharter,
+    knitr,
+    markdown,
+    RColorBrewer,
+    rJava,
+    shiny,
+    shinyAce,
+    shinyBS,
+    shinyjs,
+    shinythemes,
+    tidyr,
+    viridisLite,
+    xlsx
+License: GPL-3
+Encoding: UTF-8
+VignetteBuilder: knitr
+RoxygenNote: 6.1.0

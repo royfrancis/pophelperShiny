@@ -1,0 +1,29 @@
+/* POPHELPER WEB APP */
+/* Custom CSS styles */
+/* Roy Francis */
+
+/* font colour #2c3e50 */
+/* panel background #ecf0f1 */
+
+/* link colour */
+a, a:link, a:hover, a:active {
+  color: #428BCA;
+}
+
+/* link hover colour */
+a:visited {
+  color: #67a2d4;
+}
+
+/*
+button colour
+.btn-primary {
+  background-color: #428BCA;
+}
+
+button hover colour
+.btn-primary:hover {
+  background-color: #67a2d4;
+}
+
+*/
