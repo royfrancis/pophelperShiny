@@ -42,10 +42,7 @@ shinyUI(
                                                                             
                                                                             helpText("Upload a zipped file (.zip) with one or more run files of a single filetype/format."),
                                                                             helpText("Each session closes after 10 mins of inactivity. Data is not stored/saved on the server. Please download tables and plots that you wish to keep."),
-                                                                            helpText("Check out the 'Guide' tab for more detailed instructions and sample files to download."),
-                                                                            tags$button(id='btn_close',type="button",class="btn btn-default action-button",
-                                                                              onclick = "setTimeout(function(){window.close();},500);",
-                                                                              "Close App")
+                                                                            helpText("Check out the 'Guide' tab for more detailed instructions and sample files to download.")
                                                                           )
                                                                    ),
                                                                    column(8,
@@ -159,7 +156,7 @@ shinyUI(
                             ), # fluidRow
                             tags$hr(),
                             HTML(paste0("<small>",fn_pophelper(),". Last Updated: ",fn_update(),"<small></br>")),
-                            HTML("<small>(c) 2018 Roy M Francis</small></br><img src='http://i.creativecommons.org/l/by-nc-sa/4.0/80x15.png' alt='cclicense' align='top'>")
+                            HTML("<small>(c) 2018 Roy M Francis</small></br>")
                      ) ##column middle
             ) #fluidRow
   ) #fluidpage

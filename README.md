@@ -10,7 +10,7 @@ The app can be installed as a regular R package and run locally. See instruction
 
 ## Installation  
 
-You need to have the latest [JAVA JDK and JRE](http://www.oracle.com/technetwork/java/javase/downloads/index.html) installed on your system. You need to have R (> 3.5.0) statistical package installed on your system. [R](https://www.r-project.org/) is open-source and freely available to download for Windows, Mac and other OS. Then, basically run the code below. This installs the dependency packages, then it installs `pophelperShiny` from `github` using the `devtools` package.  
+You need to have the latest [JAVA JDK and JRE](http://www.oracle.com/technetwork/java/javase/downloads/index.html) installed on your system. Mac and Linux users will need to have Cairo graphics installed separately. You need to have R (> 3.5.0) statistical package installed. [R](https://www.r-project.org/) is open-source and freely available to download for Windows, Mac and other OS. Then, basically run the code below. This installs the dependency packages, then it installs `pophelperShiny` from `github` using the `devtools` package.  
 
 ```coffee
 # install dependencies and devtools
@@ -36,8 +36,8 @@ If using the RStudio browser, click on 'Open in Browser' to open in a system bro
 + Windows 10, R 3.5.0  
 + Windows 7 64bit, R 3.5.1  
 + Mac High Sierra 10.13.1, R 3.5.1  
-+ CentOS Linux release 7.5.1804 , R 3.5.0  
-+ Ubuntu Linux 16.04 LTS, R 3.5.0  
++ CentOS Linux release 7.5.1804 , R 3.5.0  (App does not close gracefully)
++ Ubuntu Linux 16.04 LTS, R 3.5.1  
 
 ### Disclaimer
 

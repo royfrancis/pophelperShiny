@@ -12,13 +12,6 @@ rootwd <- getwd()
 
 shinyServer(function(input,output,session) {
   
-  # OBS: btn_close -------------------------------------------------------------
-  # observer for close app button
-  
-  observe({
-    if (input$btn_close > 0) stopApp()
-  })
-  
   # RV: store ------------------------------------------------------------------
   # reactive values in store initialised
   
