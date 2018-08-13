@@ -2,12 +2,15 @@
 
 `pophelperShiny` compliments the R package `pophelper` by providing a graphical user interface around the fuctions. This app is used to analyse and visualise population structure from programs such as STRUCTURE, TESS, TESS3, BAPS and numeric delimited formats such as ADMIXTURE or fastSTRUCTURE. The app can be used to read run files to R, tabulate runs, summarise runs, estimate *K* using the Evanno method, align clusters within K using CLUMPP and generate barplot figures.  
 
+![A preview of the app.](./images/preview.jpg)
+
 ## Usage
 
 The app can be installed as a regular R package and run locally. See instructions below. The app can also be accessed online at [pophelper.com](http://www.pophelper.com). 
 
 ## Installation  
-You need to have R (> 3.5.0) statistical package installed on your system. [R](https://www.r-project.org/) is open-source and freely available to download for Windows, Mac and other OS. Then, install the dependency packages. Then, you can install `pophelperShiny` from `github` using the `devtools` package.  
+
+You need to have R (> 3.5.0) statistical package installed on your system. [R](https://www.r-project.org/) is open-source and freely available to download for Windows, Mac and other OS. Then, basically run the code below. This installs the dependency packages, then it installs `pophelperShiny` from `github` using the `devtools` package.  
 
 ```coffee
 # install dependencies and devtools
@@ -42,6 +45,6 @@ The `pophelperShiny` R package is offered free and without warranty of any kind,
 
 ### Contact
 
-If you have an comments, suggestions, corrections or ideas on ways to improve or extend this package, feel free to contact me. Submit a report on the [Github issues page](/issues).  
+If you have an comments, suggestions, corrections or ideas on ways to improve or extend this package, feel free to contact me. Submit an issue on the [Github issues page](/issues).  
 
 2018 | Roy M Francis  
