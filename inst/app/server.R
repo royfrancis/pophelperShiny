@@ -8,9 +8,16 @@
 options(shiny.maxRequestSize=((1*1024^2)/5))
 rootwd <- getwd()
 
-## SERVER =======================================================================
+## SERVER ======================================================================
 
 shinyServer(function(input,output,session) {
+  
+  # OBS: btn_close -------------------------------------------------------------
+  # observer for close app button
+  
+  observe({
+    if (input$btn_close > 0) stopApp()
+  })
   
   # RV: store ------------------------------------------------------------------
   # reactive values in store initialised
@@ -34,9 +41,6 @@ shinyServer(function(input,output,session) {
                                       kvec=NULL,
                                       grplabtitle="None",
                                       grplabtext="None",
-                                      
-                                      grplaborder="None",
-                                      grplabset=NULL,
                                       sortind="None")
   
   # RFN: fn_getfilenames -------------------------------------------------------
@@ -45,34 +49,34 @@ shinyServer(function(input,output,session) {
   fn_getfilenames <- reactive({
     validate(fn_validate(try(input$in_filesmain),message1="No uploaded file(s)."))
     
-      cat("Running fn_getfilenames() ...\n")
-      inputdata <- input$in_filesmain
-      cat(paste0(round(((sum(inputdata[[2]])/1024)/1024),3)," MB uploaded.\n"))
-      if(((sum(inputdata[[2]])/1024)/1024) > 5) stop("Upload limit exceeded 5 MB. Upload fewer files or files with smaller size.\n")
-
-      # error if multiple files and zip file
-      if(any(grepl(".rar$",inputdata$name))) stop(".rar files are not allowed. Use .zip format.")
-      if(any(grepl(".zip$",inputdata$name)) && length(inputdata$name) > 1) stop("Multiple .zip files or .zip files with other files are not allowed.")
-      
-      #store_general$newwd <- fn_dir(rootwd)
-      
-      if(any(grepl(".zip$",inputdata$name)) && length(inputdata$name) == 1){
-        unzip(inputdata$datapath,exdir=store_general$newwd)
-        dpath <- list.files(path=store_general$newwd,full.names=T)
-        store_general$basic <- data.frame(name=basename(dpath),
-                                 size=file.info(dpath)$size,
-                                 type=NA,
-                                 datapath=dpath,
-                                 format=checkQ(dpath)$type,
-                                 fname=gsub("([[:punct:]])|\\s+","_",basename(dpath)),
-                                 stringsAsFactors=FALSE)
-      }else{
-        inputdata$format <- checkQ(inputdata$datapath)$type
-        inputdata$fname <- gsub("([[:punct:]])|\\s+","_",inputdata[[1]])
-        store_general$basic <- inputdata
-      }
-      setwd(store_general$newwd)
-      cat(paste0("Working directory set to ",store_general$newwd,".\n"))
+    cat("Running fn_getfilenames() ...\n")
+    inputdata <- input$in_filesmain
+    cat(paste0(round(((sum(inputdata[[2]])/1024)/1024),3)," MB uploaded.\n"))
+    if(((sum(inputdata[[2]])/1024)/1024) > 5) stop("Upload limit exceeded 5 MB. Upload fewer files or files with smaller size.\n")
+    
+    # error if multiple files and zip file
+    if(any(grepl(".rar$",inputdata$name))) stop(".rar files are not allowed. Use .zip format.")
+    if(any(grepl(".zip$",inputdata$name)) && length(inputdata$name) > 1) stop("Multiple .zip files or .zip files with other files are not allowed.")
+    
+    #store_general$newwd <- fn_dir(rootwd)
+    
+    if(any(grepl(".zip$",inputdata$name)) && length(inputdata$name) == 1){
+      unzip(inputdata$datapath,exdir=store_general$newwd)
+      dpath <- list.files(path=store_general$newwd,full.names=T)
+      store_general$basic <- data.frame(name=basename(dpath),
+                                        size=file.info(dpath)$size,
+                                        type=NA,
+                                        datapath=dpath,
+                                        format=checkQ(dpath)$type,
+                                        fname=gsub("([[:punct:]])|\\s+","_",basename(dpath)),
+                                        stringsAsFactors=FALSE)
+    }else{
+      inputdata$format <- checkQ(inputdata$datapath)$type
+      inputdata$fname <- gsub("([[:punct:]])|\\s+","_",inputdata[[1]])
+      store_general$basic <- inputdata
+    }
+    setwd(store_general$newwd)
+    cat(paste0("Working directory set to ",store_general$newwd,".\n"))
   })
   
   ## DATA ======================================================================
@@ -125,19 +129,19 @@ shinyServer(function(input,output,session) {
     progress <- shiny::Progress$new()
     on.exit(progress$close())
     progress$set(message="Processing data...",value=round(runif(1,0.4,0.9),2))
-
+    
     inputdata <- store_general$basic
     data.frame(filename=inputdata$fname,format=inputdata$format,size_kb=round(inputdata$size/1024,1))
-    },
-    selection="none",
-    options=list(
+  },
+  selection="none",
+  options=list(
     searchHighlight=TRUE,
     pageLength=-1,
     dom="ftr",
     columnDefs=list(list(className="dt-center",targets=c(2,3)),
-                  list(className="dt-left",targets=1),
-                  list(width="200px",targets="_all"))
-    ))
+                    list(className="dt-left",targets=1),
+                    list(width="200px",targets="_all"))
+  ))
   
   # RFN: fn_readq ----------------------------------------------------------------
   # read uploaded data and save as qlist
@@ -154,7 +158,7 @@ shinyServer(function(input,output,session) {
     progress <- shiny::Progress$new()
     on.exit(progress$close())
     progress$set(message="Processing data...",value=round(runif(1,0.4,0.9),2))
-
+    
     selfile <- inputdata$datapath
     if(length(selfile) > 1)
     {
@@ -162,13 +166,13 @@ shinyServer(function(input,output,session) {
       chk <- unique(checkQ(selfile)$type)
       fn_filechk1 <- function(chk) if (length(chk) > 1) print("Input contains mixed formats.")
       fn_filechk2 <- function(chk) if (length(chk)==1) {if (chk=="UNIDENTIFIED") print("Unidentified input format.")}
-
+      
       validate(fn_filechk1(try(chk)))
       validate(fn_filechk2(try(chk)))
     }
     
     store_general$qlist <- readQWa(files=inputdata$datapath,
-                            filenames=inputdata$fname,indlabfromfile=TRUE)
+                                   filenames=inputdata$fname,indlabfromfile=TRUE)
     unlink(list.files(path=store_general$newwd,full.names=TRUE))
   })
   
@@ -431,7 +435,7 @@ shinyServer(function(input,output,session) {
     order=list(c(1,"asc")),
     ordering=FALSE)
   )
-
+  
   # OUT: out_plot_k ---------------------------------------------------------------
   # displays k-plot from summarised data table
   
@@ -684,7 +688,7 @@ shinyServer(function(input,output,session) {
     
     epebwidth <- input$in_epebwidth
     epbasesize <- input$in_epbasesize
-
+    
     epheight <- as.numeric(input$in_epheight)
     epwidth <- as.numeric(input$in_epwidth)
     epres <- as.numeric(input$in_epres)
@@ -770,7 +774,7 @@ shinyServer(function(input,output,session) {
     )
   })
   
-
+  
   
   # FN:  fn_download_plot_evanno -------------------------------------------------
   # download evanno full plot
@@ -802,7 +806,7 @@ shinyServer(function(input,output,session) {
                                          pointtype=evp$pointtype,linesize=evp$linesize,linecol=evp$pointcol,linetype=evp$linetype,
                                          ebcol=evp$textcol,ebwidth=evp$ebwidth,basesize=evp$basesize)
     plen <- length(plist)
-
+    
     if(fformat=="png") png(paste0(downloadfilename,".png"),height=fheight,width=fwidth,res=fres,units="cm",type="cairo-png")
     if(fformat=="tiff") tiff(paste0(downloadfilename,".tiff"),height=fheight,width=fwidth,res=fres,units="cm",compression="lzw",type="cairo")
     if(fformat=="jpeg") jpeg(paste0(downloadfilename,".jpg"),height=fheight,width=fwidth,res=fres,units="cm",quality=100,type="cairo")
@@ -814,7 +818,7 @@ shinyServer(function(input,output,session) {
     if(fformat=="tiff") cat(paste0(downloadfilename,".tiff exported.\n"))
     if(fformat=="jpeg") cat(paste0(downloadfilename,".jpeg exported.\n"))
     if(fformat=="pdf") cat(paste0(downloadfilename,".pdf exported.\n"))
-            
+    
     progress$inc(0.9,message="Downloading plot...")
   }
   
@@ -872,13 +876,13 @@ shinyServer(function(input,output,session) {
     
     #if(is.null(input$in_imgfloat)){imgfloat <- FALSE}else{imgfloat <- input$in_imgfloat}
     
-      div(
+    div(
       conditionalPanel(
         condition="!is.null(store_general$qlist)",
         div(
-            sliderInput("in_scale","Image preview scale",min=0,max=3,step=0.10,value=1),
-            shinyBS::bsTooltip("in_scale",title="This slider scales the preview in the browser and does not affect download.",placement="right",trigger="hover")
-      )),
+          sliderInput("in_scale","Image preview scale",min=0,max=3,step=0.10,value=1),
+          shinyBS::bsTooltip("in_scale",title="This slider scales the preview in the browser and does not affect download.",placement="right",trigger="hover")
+        )),
       imageOutput("out_plot_barplot",width="100%",height="100%")
     )
   })
@@ -893,24 +897,24 @@ shinyServer(function(input,output,session) {
     div(
       h3("> Plot options"),
       wellPanel(
-                h4("Select file(s) to plot:"),
-                helpText("The order in which you select is the order in which runs are plotted."),
-                DT::dataTableOutput("table_selectrunplot"),
-                tags$br(),
-                #checkboxInput("in_imgfloat","Float image preview",value=FALSE),
-                #actionButton("btn_draw","Draw plot",class="btn-lg btn-block"),
-                #tags$br(),
-                selectInput("in_clustercol","Colour scheme",choices=colourPalettes(),selectize=TRUE,selected="Rich"),
-                shinyBS::bsTooltip("in_clustercol",title="See guide for details on colours.",placement="top",trigger="hover"),
-                uiOutput("ui_colorbreweroption"),
-                uiOutput("ui_displaycols"),
-                uiOutput("ui_align"),
-                selectInput("in_sortind","Order individuals",choices=c("None","Label"),selectize=TRUE,multiple=FALSE,selected="None"),
-                shinyBS::bsTooltip("in_sortind",title="Order individuals. When using group labels,individuals are ordered within groups.",placement="top",trigger="hover"),
-                checkboxInput("in_useindlab","Use individual labels",value=FALSE),
-                uiOutput("ui_indlaboptions"),
-                checkboxInput("in_showgrplab","Use group labels",value=FALSE),
-                uiOutput("ui_grplaboptions")
+        h4("Select file(s) to plot:"),
+        helpText("The order in which you select is the order in which runs are plotted."),
+        DT::dataTableOutput("table_selectrunplot"),
+        tags$br(),
+        #checkboxInput("in_imgfloat","Float image preview",value=FALSE),
+        #actionButton("btn_draw","Draw plot",class="btn-lg btn-block"),
+        #tags$br(),
+        selectInput("in_clustercol","Colour scheme",choices=colourPalettes(),selectize=TRUE,selected="Rich"),
+        shinyBS::bsTooltip("in_clustercol",title="See guide for details on colours.",placement="top",trigger="hover"),
+        uiOutput("ui_colorbreweroption"),
+        uiOutput("ui_displaycols"),
+        uiOutput("ui_align"),
+        selectInput("in_sortind","Order individuals",choices=c("None","Label"),selectize=TRUE,multiple=FALSE,selected="None"),
+        shinyBS::bsTooltip("in_sortind",title="Order individuals. When using group labels,individuals are ordered within groups.",placement="top",trigger="hover"),
+        checkboxInput("in_useindlab","Use individual labels",value=FALSE),
+        uiOutput("ui_indlaboptions"),
+        checkboxInput("in_showgrplab","Use group labels",value=FALSE),
+        uiOutput("ui_grplaboptions")
       )
     )
   })
@@ -927,7 +931,7 @@ shinyServer(function(input,output,session) {
   
   output$table_selectrunplot <- DT::renderDataTable({
     req(store_general$qlist)
-
+    
     dfr <- store_general$tabulateq[,c("file","k")]
     row.names(dfr) <- dfr$file
     dfr
@@ -968,7 +972,7 @@ shinyServer(function(input,output,session) {
         shinyBS::bsTooltip("in_align",title="Align or merge runs of equal K. Runs of varying K cannot be aligned or merged.",placement="top",trigger="hover")
       )
     }
-      
+    
   })
   
   # UI: ui_indlaboptions -------------------------------------------------------
@@ -988,7 +992,7 @@ shinyServer(function(input,output,session) {
       )
     }
   })
-
+  
   # UI: ui_indlabnew --------------------------------------------------------
   # ui get new individual labels upload/paste
   
@@ -1207,9 +1211,9 @@ shinyServer(function(input,output,session) {
     })
     
     div(div(style="overflow-y:scroll;max-height:270px;background-color:#d4d8d8;padding-right:10px;padding-left:10px;padding-top:20px;padding-bottom:20px;border-radius:3px;",
-        do.call(tagList,plist)),
+            do.call(tagList,plist)),
         tags$br())
-
+    
   })
   
   ## STD PLOT OPTS =============================================================
@@ -1220,39 +1224,39 @@ shinyServer(function(input,output,session) {
   output$ui_stdplotoptions <- renderUI({
     req(store_general$qlist)
     #validate(fn_validate(try(store_plot_helper$selected_run),message1="ui_stdplotoptions: 'store_plot_helper$selected_run' is null."))
-
+    
     div(
       divopenh3("div_stdplotoptionscollapse","> Standard options",
-        wellPanel(id="div_stdplotoptions",style="overflow-y:scroll; max-height: 400px",
-            divopenh4("div_generalstdoptions","> General options",
-                      divgrey(
-              div(class="row",
-                  div(class="col-xs-6",style=list("padding-right: 5px;"),
-                      numericInput("in_barsize","Bar size",min=0,max=1,step=0.02,value=1),
-                      shinyBS::bsTooltip("in_barsize",title="Size of bars on the barplot. Eg 0-1.0.",placement="bottom",trigger="hover")
-                  ),
-                  div(class="col-xs-6",style=list("padding-left: 5px;"),
-                      numericInput("in_barbordersize","Bar border size",min=0,max=5,step=0.1,value=0),
-                      shinyBS::bsTooltip("in_barbordersize",title="Size of bar border. Eg 0-5.0.",placement="bottom",trigger="hover")
-                  )
-              ),
-              colourpicker::colourInput("in_barbordercolour",label="Bar border colour",value="#FFFFFF"),
-              shinyBS::bsTooltip("in_barbordercolour",title="Colour of bar border.",placement="bottom",trigger="hover"),
-              checkboxInput("in_showyaxis","Show Y axis",value=FALSE),
-              uiOutput("ui_yaxisoptions"),
-              uiOutput("ui_panelspaceroption")
-              )),
-              checkboxInput("in_showsp","Show side panel",value=TRUE),
-              uiOutput("ui_sidepaneloptions"),
-              checkboxInput("in_showtitle","Show plot title",value=FALSE),
-              uiOutput("ui_titleoptions"),
-              checkboxInput("in_showsubtitle","Show plot subtitle",value=FALSE),
-              uiOutput("ui_subtitleoptions"),
-              checkboxInput("in_showlegend","Show cluster legend",value=FALSE),
-              uiOutput("ui_clusterlegendoptions")
-              #tags$br(),
-              #actionButton("btn_reset_stdoptions","Reset panel",class="btn-sm btn-warning btn-block")
-            )),
+                wellPanel(id="div_stdplotoptions",style="overflow-y:scroll; max-height: 400px",
+                          divopenh4("div_generalstdoptions","> General options",
+                                    divgrey(
+                                      div(class="row",
+                                          div(class="col-xs-6",style=list("padding-right: 5px;"),
+                                              numericInput("in_barsize","Bar size",min=0,max=1,step=0.02,value=1),
+                                              shinyBS::bsTooltip("in_barsize",title="Size of bars on the barplot. Eg 0-1.0.",placement="bottom",trigger="hover")
+                                          ),
+                                          div(class="col-xs-6",style=list("padding-left: 5px;"),
+                                              numericInput("in_barbordersize","Bar border size",min=0,max=5,step=0.1,value=0),
+                                              shinyBS::bsTooltip("in_barbordersize",title="Size of bar border. Eg 0-5.0.",placement="bottom",trigger="hover")
+                                          )
+                                      ),
+                                      colourpicker::colourInput("in_barbordercolour",label="Bar border colour",value="#FFFFFF"),
+                                      shinyBS::bsTooltip("in_barbordercolour",title="Colour of bar border.",placement="bottom",trigger="hover"),
+                                      checkboxInput("in_showyaxis","Show Y axis",value=FALSE),
+                                      uiOutput("ui_yaxisoptions"),
+                                      uiOutput("ui_panelspaceroption")
+                                    )),
+                          checkboxInput("in_showsp","Show side panel",value=TRUE),
+                          uiOutput("ui_sidepaneloptions"),
+                          checkboxInput("in_showtitle","Show plot title",value=FALSE),
+                          uiOutput("ui_titleoptions"),
+                          checkboxInput("in_showsubtitle","Show plot subtitle",value=FALSE),
+                          uiOutput("ui_subtitleoptions"),
+                          checkboxInput("in_showlegend","Show cluster legend",value=FALSE),
+                          uiOutput("ui_clusterlegendoptions")
+                          #tags$br(),
+                          #actionButton("btn_reset_stdoptions","Reset panel",class="btn-sm btn-warning btn-block")
+                )),
       uiOutput("ui_indlabstdplotoptions"),
       uiOutput("ui_grplabstdplotoptions")
       #uiOutput("ui_downloadplotoptions")
@@ -1304,7 +1308,7 @@ shinyServer(function(input,output,session) {
   output$ui_panelspaceroption <- renderUI({
     req(store_plot_helper$selected_run)
     #validate(fn_validate(try(store_plot_helper$selected_run),message1="ui_panelspaceroption: 'store_plot_helper$selected_run' is null."))
-
+    
     if(length(store_plot_helper$selected_run)>1)
     {
       div(
@@ -1326,32 +1330,32 @@ shinyServer(function(input,output,session) {
     {
       divopenh4("div_sidepaneloptions","> Side panel options",
                 divgrey(
-        textInput("in_splab","Side panel label(s)",value="",placeholder="label1,label2"),
-        shinyBS::bsTooltip("in_splab",title="Enter custom side panel labels if required, separated by commas. Labels must be equal to number of plotted runs.",placement="top",trigger="hover"),
-
-        div(class="row",
-            div(class="col-xs-6",style=list("padding-right: 5px;"),
-                numericInput("in_splabsize","Text size",min=1,max=8,step=0.2,value=4),
-                shinyBS::bsTooltip("in_splabsize",title="Side panel text size.",placement="top",trigger="hover")
-            ),
-            div(class="col-xs-6",style=list("padding-left: 5px;"),
-                selectInput("in_splabpos","Position",selectize=TRUE,multiple=FALSE,choices=c("Right","Left"),selected="Right"),
-                shinyBS::bsTooltip("in_splabpos",title="Side panel position.",placement="top",trigger="hover")
-            )
-        ),
-        div(class="row",
-            div(class="col-xs-6",style=list("padding-right: 5px;"),
-                colourpicker::colourInput("in_splabcol",label="Colour",value="#505050"),
-                shinyBS::bsTooltip("in_splabcol",title="Side panel text colour.",placement="bottom",trigger="hover")
-            ),
-            div(class="col-xs-6",style=list("padding-left: 5px;"),
-                colourpicker::colourInput("in_spbgcol",label="Bg colour",value="#FFFFFF"),
-                shinyBS::bsTooltip("in_spbgcol",title="Side panel background colour.",placement="bottom",trigger="hover")
-            )
-        ),
-        tags$br(),
-        actionButton("btn_reset_spoptions","Reset panel",class="btn-sm btn-warning btn-block")
-      )
+                  textInput("in_splab","Side panel label(s)",value="",placeholder="label1,label2"),
+                  shinyBS::bsTooltip("in_splab",title="Enter custom side panel labels if required, separated by commas. Labels must be equal to number of plotted runs.",placement="top",trigger="hover"),
+                  
+                  div(class="row",
+                      div(class="col-xs-6",style=list("padding-right: 5px;"),
+                          numericInput("in_splabsize","Text size",min=1,max=8,step=0.2,value=4),
+                          shinyBS::bsTooltip("in_splabsize",title="Side panel text size.",placement="top",trigger="hover")
+                      ),
+                      div(class="col-xs-6",style=list("padding-left: 5px;"),
+                          selectInput("in_splabpos","Position",selectize=TRUE,multiple=FALSE,choices=c("Right","Left"),selected="Right"),
+                          shinyBS::bsTooltip("in_splabpos",title="Side panel position.",placement="top",trigger="hover")
+                      )
+                  ),
+                  div(class="row",
+                      div(class="col-xs-6",style=list("padding-right: 5px;"),
+                          colourpicker::colourInput("in_splabcol",label="Colour",value="#505050"),
+                          shinyBS::bsTooltip("in_splabcol",title="Side panel text colour.",placement="bottom",trigger="hover")
+                      ),
+                      div(class="col-xs-6",style=list("padding-left: 5px;"),
+                          colourpicker::colourInput("in_spbgcol",label="Bg colour",value="#FFFFFF"),
+                          shinyBS::bsTooltip("in_spbgcol",title="Side panel background colour.",placement="bottom",trigger="hover")
+                      )
+                  ),
+                  tags$br(),
+                  actionButton("btn_reset_spoptions","Reset panel",class="btn-sm btn-warning btn-block")
+                )
       )
     }
   })
@@ -1372,41 +1376,41 @@ shinyServer(function(input,output,session) {
   
   output$ui_titleoptions <- renderUI({
     #req(input$in_showtitle)
-  validate(fn_validate(try(input$in_showtitle),message1="ui_titleoptions: 'input$in_showtitle' is null."))
-
+    validate(fn_validate(try(input$in_showtitle),message1="ui_titleoptions: 'input$in_showtitle' is null."))
+    
     if(input$in_showtitle)
     {
       divopenh4("div_titleoptions","> Title options",
                 divgrey(
-        textInput("in_titlelab","Title label",value="Title"),
-        shinyBS::bsTooltip("in_titlelab",title="Input a custom title label.",placement="top",trigger="hover"),
-        div(class="row",
-            div(class="col-xs-6",style=list("padding-right: 5px;"),
-                numericInput("in_titlelabsize","Text size",min=1,max=8,step=0.2,value=5),
-                shinyBS::bsTooltip("in_titlelabsize",title="Title text size.",placement="bottom",trigger="hover")
-            ),
-            div(class="col-xs-6",style=list("padding-left: 5px;"),
-                numericInput("in_titlelabspacer","Spacer",min=0.4,max=2.4,step=0.2,value=1.4),
-                shinyBS::bsTooltip("in_titlelabspacer",title="Distance between title and panels.",placement="bottom",trigger="hover")
-            )
-        ),
-        div(class="row",
-            div(class="col-xs-4",style=list("padding-right: 5px; width: 34%"),
-                numericInput("in_titlelabhjust","H Justify",min=0,max=1,step=0.2,value=0),
-                shinyBS::bsTooltip("in_titlelabhjust",title="Title horizontal justification. Value between 0-1.",placement="bottom",trigger="hover")
-            ),
-            div(class="col-xs-4",style=list("padding-right: 5px; padding-left: 5px; width: 33%"),
-                numericInput("in_titlelabvjust","V Justify",min=0,max=1,step=0.2,value=0.5),
-                shinyBS::bsTooltip("in_titlelabvjust",title="Title vertical justification. Value between 0-1.",placement="bottom",trigger="hover")
-            ),
-            div(class="col-xs-4",style=list("padding-left: 5px; width: 33%"),
-                colourpicker::colourInput("in_titlelabcol",label="Text colour",value="#505050"),
-                shinyBS::bsTooltip("in_titlelabcol",title="Title text colour.",placement="top",trigger="hover")
-            )
-        ),
-        tags$br(),
-        actionButton("btn_reset_titleoptions","Reset panel",class="btn-sm btn-warning btn-block")
-      )
+                  textInput("in_titlelab","Title label",value="Title"),
+                  shinyBS::bsTooltip("in_titlelab",title="Input a custom title label.",placement="top",trigger="hover"),
+                  div(class="row",
+                      div(class="col-xs-6",style=list("padding-right: 5px;"),
+                          numericInput("in_titlelabsize","Text size",min=1,max=8,step=0.2,value=5),
+                          shinyBS::bsTooltip("in_titlelabsize",title="Title text size.",placement="bottom",trigger="hover")
+                      ),
+                      div(class="col-xs-6",style=list("padding-left: 5px;"),
+                          numericInput("in_titlelabspacer","Spacer",min=0.4,max=2.4,step=0.2,value=1.4),
+                          shinyBS::bsTooltip("in_titlelabspacer",title="Distance between title and panels.",placement="bottom",trigger="hover")
+                      )
+                  ),
+                  div(class="row",
+                      div(class="col-xs-4",style=list("padding-right: 5px; width: 34%"),
+                          numericInput("in_titlelabhjust","H Justify",min=0,max=1,step=0.2,value=0),
+                          shinyBS::bsTooltip("in_titlelabhjust",title="Title horizontal justification. Value between 0-1.",placement="bottom",trigger="hover")
+                      ),
+                      div(class="col-xs-4",style=list("padding-right: 5px; padding-left: 5px; width: 33%"),
+                          numericInput("in_titlelabvjust","V Justify",min=0,max=1,step=0.2,value=0.5),
+                          shinyBS::bsTooltip("in_titlelabvjust",title="Title vertical justification. Value between 0-1.",placement="bottom",trigger="hover")
+                      ),
+                      div(class="col-xs-4",style=list("padding-left: 5px; width: 33%"),
+                          colourpicker::colourInput("in_titlelabcol",label="Text colour",value="#505050"),
+                          shinyBS::bsTooltip("in_titlelabcol",title="Title text colour.",placement="top",trigger="hover")
+                      )
+                  ),
+                  tags$br(),
+                  actionButton("btn_reset_titleoptions","Reset panel",class="btn-sm btn-warning btn-block")
+                )
       )
     }
   })
@@ -1429,40 +1433,40 @@ shinyServer(function(input,output,session) {
   output$ui_subtitleoptions <- renderUI({
     #req(input$in_showsubtitle)
     validate(fn_validate(try(input$in_showsubtitle),message1="ui_subtitleoptions: 'input$in_showsubtitle' is null."))
-
+    
     if(input$in_showsubtitle)
     {
       divopenh4("div_subtitleoptions","> Subtitle options",
                 divgrey(
-        textInput("in_subtitlelab","Subtitle label",value="Subtitle"),
-        shinyBS::bsTooltip("in_subtitlelab",title="Input a custom subtitle label.",placement="top",trigger="hover"),
-        div(class="row",
-            div(class="col-xs-6",style=list("padding-right: 5px;"),
-                numericInput("in_subtitlelabsize","Text size",min=1,max=8,step=0.2,value=4),
-                shinyBS::bsTooltip("in_subtitlelabsize",title="Subtitle text size.",placement="bottom",trigger="hover")
-            ),
-            div(class="col-xs-6",style=list("padding-left: 5px;"),
-                numericInput("in_subtitlelabspacer","Spacer",min=0.4,max=2.4,step=0.2,value=1.4),
-                shinyBS::bsTooltip("in_subtitlelabspacer",title="Distance between subtitle and panels.",placement="bottom",trigger="hover")
-            )
-        ),
-        div(class="row",
-            div(class="col-xs-4",style=list("padding-right: 5px; width: 34%"),
-                numericInput("in_subtitlelabhjust","H Justify",min=0,max=1,step=0.2,value=0),
-                shinyBS::bsTooltip("in_subtitlelabhjust",title="Subtitle horizontal justification. Value between 0-1.",placement="bottom",trigger="hover")
-            ),
-            div(class="col-xs-4",style=list("padding-right: 5px; padding-left: 5px; width: 33%"),
-                numericInput("in_subtitlelabvjust","V Justify",min=0,max=1,step=0.2,value=0.5),
-                shinyBS::bsTooltip("in_subtitlelabvjust",title="Subtitle vertical justification. Value between 0-1.",placement="bottom",trigger="hover")
-            ),
-            div(class="col-xs-4",style=list("padding-left: 5px; width: 33%"),
-                colourpicker::colourInput("in_subtitlelabcol",label="Text colour",value="#505050"),
-                shinyBS::bsTooltip("in_subtitlelabcol",title="Subtitle text colour.",placement="top",trigger="hover")
-            )
-        ),
-        tags$br(),
-        actionButton("btn_reset_subtitleoptions","Reset panel",class="btn-sm btn-warning btn-block")
-      )
+                  textInput("in_subtitlelab","Subtitle label",value="Subtitle"),
+                  shinyBS::bsTooltip("in_subtitlelab",title="Input a custom subtitle label.",placement="top",trigger="hover"),
+                  div(class="row",
+                      div(class="col-xs-6",style=list("padding-right: 5px;"),
+                          numericInput("in_subtitlelabsize","Text size",min=1,max=8,step=0.2,value=4),
+                          shinyBS::bsTooltip("in_subtitlelabsize",title="Subtitle text size.",placement="bottom",trigger="hover")
+                      ),
+                      div(class="col-xs-6",style=list("padding-left: 5px;"),
+                          numericInput("in_subtitlelabspacer","Spacer",min=0.4,max=2.4,step=0.2,value=1.4),
+                          shinyBS::bsTooltip("in_subtitlelabspacer",title="Distance between subtitle and panels.",placement="bottom",trigger="hover")
+                      )
+                  ),
+                  div(class="row",
+                      div(class="col-xs-4",style=list("padding-right: 5px; width: 34%"),
+                          numericInput("in_subtitlelabhjust","H Justify",min=0,max=1,step=0.2,value=0),
+                          shinyBS::bsTooltip("in_subtitlelabhjust",title="Subtitle horizontal justification. Value between 0-1.",placement="bottom",trigger="hover")
+                      ),
+                      div(class="col-xs-4",style=list("padding-right: 5px; padding-left: 5px; width: 33%"),
+                          numericInput("in_subtitlelabvjust","V Justify",min=0,max=1,step=0.2,value=0.5),
+                          shinyBS::bsTooltip("in_subtitlelabvjust",title="Subtitle vertical justification. Value between 0-1.",placement="bottom",trigger="hover")
+                      ),
+                      div(class="col-xs-4",style=list("padding-left: 5px; width: 33%"),
+                          colourpicker::colourInput("in_subtitlelabcol",label="Text colour",value="#505050"),
+                          shinyBS::bsTooltip("in_subtitlelabcol",title="Subtitle text colour.",placement="top",trigger="hover")
+                      )
+                  ),
+                  tags$br(),
+                  actionButton("btn_reset_subtitleoptions","Reset panel",class="btn-sm btn-warning btn-block")
+                )
       )
     }
   })
@@ -1485,38 +1489,38 @@ shinyServer(function(input,output,session) {
   output$ui_clusterlegendoptions <- renderUI({
     #req(input$in_showlegend)
     validate(fn_validate(try(input$in_showlegend),message1="ui_clusterlegendoptions: 'input$in_showlegend' is null."))
-
+    
     if(input$in_showlegend)
     {
       divopenh4("div_legendoptions","> Legend options",
                 divgrey(
-        textInput("in_legendlab","Legend label(s)",value="",placeholder="label1,label2"),
-        shinyBS::bsTooltip("in_legendlab",title="Input custom cluster labels here if required, separated by commas. Number of labels must be equal to max K value across all selected runs.",placement="top",trigger="hover"),
-        selectInput("in_legendpos","Legend position",selectize=TRUE,multiple=FALSE,choices=c("Right","Left"),selected="Right"),
-        shinyBS::bsTooltip("in_legendpos",title="Legend position.",placement="top",trigger="hover"),
-        div(class="row",
-            div(class="col-xs-6",style=list("padding-right: 5px;"),
-                numericInput("in_legendtextsize","Legend text size",min=0.2,max=8,step=0.2,value=3),
-                shinyBS::bsTooltip("in_legendtextsize",title="Legend text size.",placement="bottom",trigger="hover")
-            ),
-            div(class="col-xs-6",style=list("padding-left: 5px;"),
-                numericInput("in_legendkeysize","Legend key size",min=0.2,max=8,step=0.2,value=2),
-                shinyBS::bsTooltip("in_legendkeysize",title="Legend key size.",placement="bottom",trigger="hover")
-            )
-        ),
-        div(class="row",
-            div(class="col-xs-6",style=list("padding-right: 5px;"),
-                numericInput("in_legendspacing","Legend spacing",min=0,max=8,step=0.2,value=2),
-                shinyBS::bsTooltip("in_legendspacing",title="Spacing between legend items.",placement="bottom",trigger="hover")
-            ),
-            div(class="col-xs-6",style=list("padding-left: 5px;"),
-                numericInput("in_legendrow","Legend rows",min=1,max=20,step=1,value=NA),
-                shinyBS::bsTooltip("in_legendrow",title="Number of rows in legend.",placement="bottom",trigger="hover")
-            )
-        ),
-        tags$br(),
-        actionButton("btn_reset_legendoptions","Reset panel",class="btn-sm btn-warning btn-block")
-      )
+                  textInput("in_legendlab","Legend label(s)",value="",placeholder="label1,label2"),
+                  shinyBS::bsTooltip("in_legendlab",title="Input custom cluster labels here if required, separated by commas. Number of labels must be equal to max K value across all selected runs.",placement="top",trigger="hover"),
+                  selectInput("in_legendpos","Legend position",selectize=TRUE,multiple=FALSE,choices=c("Right","Left"),selected="Right"),
+                  shinyBS::bsTooltip("in_legendpos",title="Legend position.",placement="top",trigger="hover"),
+                  div(class="row",
+                      div(class="col-xs-6",style=list("padding-right: 5px;"),
+                          numericInput("in_legendtextsize","Legend text size",min=0.2,max=8,step=0.2,value=3),
+                          shinyBS::bsTooltip("in_legendtextsize",title="Legend text size.",placement="bottom",trigger="hover")
+                      ),
+                      div(class="col-xs-6",style=list("padding-left: 5px;"),
+                          numericInput("in_legendkeysize","Legend key size",min=0.2,max=8,step=0.2,value=2),
+                          shinyBS::bsTooltip("in_legendkeysize",title="Legend key size.",placement="bottom",trigger="hover")
+                      )
+                  ),
+                  div(class="row",
+                      div(class="col-xs-6",style=list("padding-right: 5px;"),
+                          numericInput("in_legendspacing","Legend spacing",min=0,max=8,step=0.2,value=2),
+                          shinyBS::bsTooltip("in_legendspacing",title="Spacing between legend items.",placement="bottom",trigger="hover")
+                      ),
+                      div(class="col-xs-6",style=list("padding-left: 5px;"),
+                          numericInput("in_legendrow","Legend rows",min=1,max=20,step=1,value=NA),
+                          shinyBS::bsTooltip("in_legendrow",title="Number of rows in legend.",placement="bottom",trigger="hover")
+                      )
+                  ),
+                  tags$br(),
+                  actionButton("btn_reset_legendoptions","Reset panel",class="btn-sm btn-warning btn-block")
+                )
       )
     }
   })
@@ -1539,105 +1543,105 @@ shinyServer(function(input,output,session) {
   output$ui_grplabstdplotoptions <- renderUI({
     #req(input$in_showgrplab)
     validate(fn_validate(try(input$in_showgrplab),message1="ui_grplabstdplotoptions: 'input$in_showgrplab' is null."))
-
+    
     if(input$in_showgrplab)
     {
       divopenh3("div_grplaboptions","> Group label options",
-        wellPanel(style="overflow-y:scroll; max-height: 400px",
-                  divopenh4("div_generalgrpoptions","> General options",
-                          div(class="row",
-                              div(class="col-xs-6",style=list("padding-right: 5px;"),
-                                  numericInput("in_glh","Panel height",min=0,max=2,value=0.5,step=0.1),
-                                  shinyBS::bsTooltip("in_glh",title="Adjusts height of the group label panel.",placement="bottom",trigger="hover")
-                              ),
-                              div(class="col-xs-6",style=list("padding-left: 5px;"),
-                                  numericInput("in_ls","Panel spacer",min=0,max=0.7,value=0,step=0.1),
-                                  shinyBS::bsTooltip("in_ls",title="Label spacer adjusts spacing between the label panel and the plot(s) panel(s).",placement="bottom",trigger="hover")
-                              )
+                wellPanel(style="overflow-y:scroll; max-height: 400px",
+                          divopenh4("div_generalgrpoptions","> General options",
+                                    div(class="row",
+                                        div(class="col-xs-6",style=list("padding-right: 5px;"),
+                                            numericInput("in_glh","Panel height",min=0,max=2,value=0.5,step=0.1),
+                                            shinyBS::bsTooltip("in_glh",title="Adjusts height of the group label panel.",placement="bottom",trigger="hover")
+                                        ),
+                                        div(class="col-xs-6",style=list("padding-left: 5px;"),
+                                            numericInput("in_ls","Panel spacer",min=0,max=0.7,value=0,step=0.1),
+                                            shinyBS::bsTooltip("in_ls",title="Label spacer adjusts spacing between the label panel and the plot(s) panel(s).",placement="bottom",trigger="hover")
+                                        )
+                                    ),
+                                    div(class="row",
+                                        div(class="col-xs-6",style=list("padding-right: 5px;"),
+                                            uiOutput("ui_panelratio")
+                                        ),
+                                        div(class="col-xs-6",style=list("padding-left: 5px;"),
+                                            colourpicker::colourInput("in_grpmarkercol",label="Label marker colour",value="#505050"),
+                                            shinyBS::bsTooltip("in_grpmarkercol",title="Colour of the label points & label line.",placement="top",trigger="hover")
+                                        )
+                                    )
+                                    
                           ),
-                          div(class="row",
-                              div(class="col-xs-6",style=list("padding-right: 5px;"),
-                                  uiOutput("ui_panelratio")
-                              ),
-                              div(class="col-xs-6",style=list("padding-left: 5px;"),
-                                  colourpicker::colourInput("in_grpmarkercol",label="Label marker colour",value="#505050"),
-                                  shinyBS::bsTooltip("in_grpmarkercol",title="Colour of the label points & label line.",placement="top",trigger="hover")
-                              )
-                          )
-                          
-                  ),
-                  divopenh4("div_labeltextoptions","> Text options",
-                          div(class="row",
-                              div(class="col-xs-6",style=list("padding-right: 5px;"),
-                                  numericInput("in_grplabpos","Text position",min=0,max=1,value=0.5,step=0.1),
-                                  shinyBS::bsTooltip("in_grplabpos",title="Position of the text labels. To lower text,increase Label panel height first",placement="bottom",trigger="hover")
-                              ),
-                              div(class="col-xs-6",style=list("padding-left: 5px;"),
-                                  colourpicker::colourInput("in_grplabtextcol",label="Text colour",value="#505050"),
-                                  shinyBS::bsTooltip("in_grplabtextcol",title="Colour of the text labels.",placement="top",trigger="hover")
-                              )
+                          divopenh4("div_labeltextoptions","> Text options",
+                                    div(class="row",
+                                        div(class="col-xs-6",style=list("padding-right: 5px;"),
+                                            numericInput("in_grplabpos","Text position",min=0,max=1,value=0.5,step=0.1),
+                                            shinyBS::bsTooltip("in_grplabpos",title="Position of the text labels. To lower text,increase Label panel height first",placement="bottom",trigger="hover")
+                                        ),
+                                        div(class="col-xs-6",style=list("padding-left: 5px;"),
+                                            colourpicker::colourInput("in_grplabtextcol",label="Text colour",value="#505050"),
+                                            shinyBS::bsTooltip("in_grplabtextcol",title="Colour of the text labels.",placement="top",trigger="hover")
+                                        )
+                                    ),
+                                    div(class="row",
+                                        div(class="col-xs-4",style=list("padding-right: 5px; width: 34%"),
+                                            numericInput("in_grplabsize","Size",min=1,max=5,value=NA,step=0.1),
+                                            shinyBS::bsTooltip("in_grplabsize",title="Size of the text labels. Eg. 1.0-5.0.",placement="bottom",trigger="hover")
+                                        ),
+                                        div(class="col-xs-4",style=list("padding-right: 5px; padding-left: 5px; width: 33%"),
+                                            numericInput("in_grplabangle","Angle",min=0,max=180,value=0,step=1),
+                                            shinyBS::bsTooltip("in_grplabangle",title="Angle of the text labels. Eg. 0-180.",placement="bottom",trigger="hover")
+                                        ),
+                                        div(class="col-xs-4",style=list("padding-left: 5px; width: 33%"),
+                                            numericInput("in_grplabjust","Justify",min=0,max=1,value=0.5,step=0.1),
+                                            shinyBS::bsTooltip("in_grplabjust",title="Justification of the text labels. Eg. 0.0-1.0.",placement="bottom",trigger="hover")
+                                        )
+                                    )
                           ),
-                          div(class="row",
-                              div(class="col-xs-4",style=list("padding-right: 5px; width: 34%"),
-                                  numericInput("in_grplabsize","Size",min=1,max=5,value=NA,step=0.1),
-                                  shinyBS::bsTooltip("in_grplabsize",title="Size of the text labels. Eg. 1.0-5.0.",placement="bottom",trigger="hover")
-                              ),
-                              div(class="col-xs-4",style=list("padding-right: 5px; padding-left: 5px; width: 33%"),
-                                  numericInput("in_grplabangle","Angle",min=0,max=180,value=0,step=1),
-                                  shinyBS::bsTooltip("in_grplabangle",title="Angle of the text labels. Eg. 0-180.",placement="bottom",trigger="hover")
-                              ),
-                              div(class="col-xs-4",style=list("padding-left: 5px; width: 33%"),
-                                  numericInput("in_grplabjust","Justify",min=0,max=1,value=0.5,step=0.1),
-                                  shinyBS::bsTooltip("in_grplabjust",title="Justification of the text labels. Eg. 0.0-1.0.",placement="bottom",trigger="hover")
-                              )
-                          )
-                  ),
-                  divopenh4("div_pointoptions","> Point options",
-                          div(class="row",
-                              div(class="col-xs-6",style=list("padding-right: 5px;"),
-                                  numericInput("in_pointsize","Point size",min=0.5,max=5,value=NA,step=0.1),
-                                  shinyBS::bsTooltip("in_pointsize",title="Size of the label points. Eg. 0.5-5.0.",placement="bottom",trigger="hover")
-                              ),
-                              div(class="col-xs-6",style=list("padding-left: 5px;"),
-                                  textInput("in_pointtype","Point type",value="|"),
-                                  shinyBS::bsTooltip("in_pointtype",title="Point type. Eg. 1,2,|,+ etc. See Guide.",placement="bottom",trigger="hover")
-                              )
-                          )
-                  ),
-                  divopenh4("div_lineoptions","> Line options",
-                          sliderInput("in_linepos","Line position",min=0,max=1,value=1.0,step=0.1),
-                          div(class="row",
-                              div(class="col-xs-6",style=list("padding-right: 5px;"),
-                                  numericInput("in_linesize","Line size",min=0.1,max=1,value=NA,step=0.1),
-                                  shinyBS::bsTooltip("in_linesize",title="Thickness of the label line. Eg. 0.1-1.0.",placement="bottom",trigger="hover")
-                              ),
-                              div(class="col-xs-6",style=list("padding-left: 5px;"),
-                                  textInput("in_linetype","Line type",value=1),
-                                  shinyBS::bsTooltip("in_linetype",title="Label line type. Eg. 1,2,12 etc. See Guide.",placement="bottom",trigger="hover")
-                              )
-                          )
-                  ),
-                  divopenh4("div_divideroptions","> Divider options",
-                          checkboxInput("in_showdiv","Divider line",value=TRUE),
-                          shinyBS::bsTooltip("in_showdiv",title="Vertical lines to visually separate populations.",placement="right",trigger="hover"),
-                          selectInput("in_divgrp","Div group label title",choices=store_plot_helper$grplabtitle,selectize=TRUE,multiple=TRUE,selected="None"),
-                          shinyBS::bsTooltip("in_divgrp",title="Select one or more group label titles to draw divider lines.",placement="top",trigger="hover"),
-                          colourpicker::colourInput("in_divcol",label="Colour",value="#FFFFFF"),
-                          shinyBS::bsTooltip("in_divcol",title="Colour of the divider line.",placement="top",trigger="hover"),
-
-                          div(class="row",
-                              div(class="col-xs-6",style=list("padding-right: 5px;"),
-                                  numericInput("in_divsize","Div size",min=0.1,max=1,value=NA,step=0.1),
-                                  shinyBS::bsTooltip("in_divsize",title="Thickness of the divider line. Eg. 0.1-1.0.",placement="top",trigger="hover")
-                              ),
-                              div(class="col-xs-6",style=list("padding-left: 5px;"),
-                                  textInput("in_divtype","Div type",value=21),
-                                  shinyBS::bsTooltip("in_divtype",title="Divider line type. Eg. 1,2,12 etc. See Guide.",placement="top",trigger="hover")
-                              )
-                          )
-                  ),
-                  actionButton("btn_reset_grplabstdoptions","Reset panel",class="btn-sm btn-warning btn-block")
-        )
+                          divopenh4("div_pointoptions","> Point options",
+                                    div(class="row",
+                                        div(class="col-xs-6",style=list("padding-right: 5px;"),
+                                            numericInput("in_pointsize","Point size",min=0.5,max=5,value=NA,step=0.1),
+                                            shinyBS::bsTooltip("in_pointsize",title="Size of the label points. Eg. 0.5-5.0.",placement="bottom",trigger="hover")
+                                        ),
+                                        div(class="col-xs-6",style=list("padding-left: 5px;"),
+                                            textInput("in_pointtype","Point type",value="|"),
+                                            shinyBS::bsTooltip("in_pointtype",title="Point type. Eg. 1,2,|,+ etc. See Guide.",placement="bottom",trigger="hover")
+                                        )
+                                    )
+                          ),
+                          divopenh4("div_lineoptions","> Line options",
+                                    sliderInput("in_linepos","Line position",min=0,max=1,value=1.0,step=0.1),
+                                    div(class="row",
+                                        div(class="col-xs-6",style=list("padding-right: 5px;"),
+                                            numericInput("in_linesize","Line size",min=0.1,max=1,value=NA,step=0.1),
+                                            shinyBS::bsTooltip("in_linesize",title="Thickness of the label line. Eg. 0.1-1.0.",placement="bottom",trigger="hover")
+                                        ),
+                                        div(class="col-xs-6",style=list("padding-left: 5px;"),
+                                            textInput("in_linetype","Line type",value=1),
+                                            shinyBS::bsTooltip("in_linetype",title="Label line type. Eg. 1,2,12 etc. See Guide.",placement="bottom",trigger="hover")
+                                        )
+                                    )
+                          ),
+                          divopenh4("div_divideroptions","> Divider options",
+                                    checkboxInput("in_showdiv","Divider line",value=TRUE),
+                                    shinyBS::bsTooltip("in_showdiv",title="Vertical lines to visually separate populations.",placement="right",trigger="hover"),
+                                    selectInput("in_divgrp","Div group label title",choices=store_plot_helper$grplabtitle,selectize=TRUE,multiple=TRUE,selected="None"),
+                                    shinyBS::bsTooltip("in_divgrp",title="Select one or more group label titles to draw divider lines.",placement="top",trigger="hover"),
+                                    colourpicker::colourInput("in_divcol",label="Colour",value="#FFFFFF"),
+                                    shinyBS::bsTooltip("in_divcol",title="Colour of the divider line.",placement="top",trigger="hover"),
+                                    
+                                    div(class="row",
+                                        div(class="col-xs-6",style=list("padding-right: 5px;"),
+                                            numericInput("in_divsize","Div size",min=0.1,max=1,value=NA,step=0.1),
+                                            shinyBS::bsTooltip("in_divsize",title="Thickness of the divider line. Eg. 0.1-1.0.",placement="top",trigger="hover")
+                                        ),
+                                        div(class="col-xs-6",style=list("padding-left: 5px;"),
+                                            textInput("in_divtype","Div type",value=21),
+                                            shinyBS::bsTooltip("in_divtype",title="Divider line type. Eg. 1,2,12 etc. See Guide.",placement="top",trigger="hover")
+                                        )
+                                    )
+                          ),
+                          actionButton("btn_reset_grplabstdoptions","Reset panel",class="btn-sm btn-warning btn-block")
+                )
       )
     }
   })
@@ -1691,7 +1695,7 @@ shinyServer(function(input,output,session) {
     if(input$in_useindlab) 
     {
       divopenh3("div_indlaboptions","> Individual label options",
-        wellPanel(
+                wellPanel(
                   uiOutput("ui_sharedindlab"),
                   div(class="row",
                       div(class="col-xs-6",style=list("padding-right: 5px;"),
@@ -1728,7 +1732,7 @@ shinyServer(function(input,output,session) {
                       )
                   ),
                   actionButton("btn_reset_indlabstdoptions","Reset panel",class="btn-sm btn-warning btn-block")
-        )
+                )
       )
     }
   })
@@ -1767,7 +1771,7 @@ shinyServer(function(input,output,session) {
           shinyBS::bsTooltip("in_sharedindlab",title="Should individual labels be displayed under each panel separately or a common label under the bottom panel.",placement="right",trigger="hover")
         )
       }
-      }
+    }
     
   })
   
@@ -1821,7 +1825,7 @@ shinyServer(function(input,output,session) {
     {
       customcols <- c(customcols,eval(parse(text=paste0("input$in_col",i))))
     }
-
+    
     return(customcols)
   })
   
@@ -1943,7 +1947,7 @@ shinyServer(function(input,output,session) {
     # if(file.exists(paste0(store_general$newwd,"/clumpp/paramfile"))) file.remove(paste0(store_general$newwd,"/paramfile"))
     
     #if(is.null(store_plot_helper$qlist_aligned)){
-      clumppExportWa(qlist=qlist,useexe=TRUE,exd=rootwd,currwd=store_general$newwd)
+    clumppExportWa(qlist=qlist,useexe=TRUE,exd=rootwd,currwd=store_general$newwd)
     #}else{
     #  if(!identical(names(qlist),names(store_plot_helper$qlist_aligned))) clumppExportWa(qlist=qlist,useexe=TRUE,currwd=store_general$newwd)
     #}
@@ -1952,8 +1956,8 @@ shinyServer(function(input,output,session) {
     if(input$in_align=="Align repeats")
     {
       sl_qlist <- readQWa(files=paste0(store_general$newwd,"/clumpp/clumpp_k",k,"-aligned.txt"),
-                                                 filenames=paste0("clumpp_k",k,"-aligned"),
-                                                 filetype="clumpp",indlabfromfile=FALSE)
+                          filenames=paste0("clumpp_k",k,"-aligned"),
+                          filetype="clumpp",indlabfromfile=FALSE)
       names(sl_qlist) <- paste0(names(qlist),"-Aligned")
       #sl_qlist <- store_plot_helper$qlist_aligned
       #store_plot_helper$selected_tabulateq <- tabulateQ(sl_qlist)
@@ -1964,8 +1968,8 @@ shinyServer(function(input,output,session) {
     if(input$in_align=="Merge repeats")
     {
       sl_qlist <- readQWa(files=paste0(store_general$newwd,"/clumpp/clumpp_k",k,"-merged.txt"),
-                                                filenames=paste0("clumpp_k",k,"-merged"),
-                                                filetype="clumpp",indlabfromfile=FALSE)
+                          filenames=paste0("clumpp_k",k,"-merged"),
+                          filetype="clumpp",indlabfromfile=FALSE)
       names(sl_qlist) <- paste0("K",k,"-Merged")
       #sl_qlist <- store_plot_helper$qlist_merged
       #store_plot_helper$selected_tabulateq <- tabulateQ(sl_qlist)
@@ -2090,7 +2094,7 @@ shinyServer(function(input,output,session) {
         sl_sortind <- gsub("^Label$","label",gsub("^All$","all",sl_sortind))
       }
     }
-
+    
     progress$inc(0.8,message="Computing core parameters...")
     
     # get grplab
@@ -2127,13 +2131,13 @@ shinyServer(function(input,output,session) {
       if(is.null(input$in_subsetgrp)){
         sl_subsetgrp <- NA
       }else{
-          sl_subsetgrp <- input$in_subsetgrp
-          if(("None" %in% sl_subsetgrp) || (sl_subsetgrp == "")) {
-            sl_subsetgrp <- NA
-          }else{
-            validate(fn_validate_subsetgrp(input1=sl_selgrp,input2=store_plot_helper$grplab,input3=sl_ordergrp))
-          }
+        sl_subsetgrp <- input$in_subsetgrp
+        if(("None" %in% sl_subsetgrp) || (sl_subsetgrp == "")) {
+          sl_subsetgrp <- NA
+        }else{
+          validate(fn_validate_subsetgrp(input1=sl_selgrp,input2=store_plot_helper$grplab,input3=sl_ordergrp))
         }
+      }
       
       #validate(fn_validate(try(input$in_grpmean),message1="Argument 'in_grpmean' missing."))
       if(is.null(input$in_grpmean)){sl_grpmean <- FALSE}else{sl_grpmean <- input$in_grpmean}
@@ -2174,7 +2178,7 @@ shinyServer(function(input,output,session) {
     cparams <- fn_sl_core()
     sl_imgoutput <- cparams$imgoutput
     sl_sortind <- cparams$sortind
-
+    
     progress <- shiny::Progress$new()
     on.exit(progress$close())
     progress$set(message="Computing std plot parameters...",value=0.1)
@@ -2270,7 +2274,7 @@ shinyServer(function(input,output,session) {
         sl_pointtype <- suppressWarnings(as.numeric(input$in_pointtype))
         if(is.na(sl_pointtype)) sl_pointtype <- as.character(input$in_pointtype)
       }
-
+      
       #validate(fn_validate(try(input$in_linepos),message1="Argument 'in_linepos' missing."))
       if(is.null(input$in_linepos)){sl_linepos <- 0.75}else{sl_linepos <- input$in_linepos}
       #validate(fn_validate(try(input$in_linetype),message1="Argument 'in_linetype' missing."))
@@ -2280,7 +2284,7 @@ shinyServer(function(input,output,session) {
         sl_linetype <- suppressWarnings(as.numeric(input$in_linetype))
         if(sl_linetype > 10 | is.na(sl_linetype)) sl_linetype <- as.character(input$in_linetype)
       }
-
+      
       #validate(fn_validate(try(input$in_showdiv),message1="Argument 'in_showdiv' missing."))
       if(is.null(input$in_showdiv)){sl_showdiv <- TRUE}else{sl_showdiv <- input$in_showdiv}
       if(sl_showdiv)
@@ -2296,7 +2300,7 @@ shinyServer(function(input,output,session) {
           sl_divtype <- suppressWarnings(as.numeric(input$in_divtype))
           if(sl_divtype > 10 | is.na(sl_divtype)) sl_divtype <- as.character(input$in_divtype)
         }
-
+        
         #validate(fn_validate(try(input$in_divgrp),message1="Argument 'in_divgrp' missing."))
         if(is.null(input$in_divgrp)) {sl_divgrp <- "None"}else{sl_divgrp <- input$in_divgrp}
         if("None" %in% sl_divgrp){
@@ -2322,9 +2326,9 @@ shinyServer(function(input,output,session) {
       if(is.null(input$in_linesize)){sl_linesize <- NA}else{sl_linesize <- input$in_linesize}
       
       ppar <- getPlotParams(grplab=cparams$grplab,plotnum=length(store_plot_helper$selected_run),
-                                        grplabsize=sl_grplabsize,grplabangle=sl_grplabangle,
-                                        grplabjust=sl_grplabjust,pointsize=sl_pointsize,
-                                        linesize=sl_linesize)
+                            grplabsize=sl_grplabsize,grplabangle=sl_grplabangle,
+                            grplabjust=sl_grplabjust,pointsize=sl_pointsize,
+                            linesize=sl_linesize)
       
       sl_grplabsize <- ppar$grplabsize
       sl_grplabangle <- ppar$grplabangle
@@ -2391,7 +2395,7 @@ shinyServer(function(input,output,session) {
           validate(fn_validate_equal(length(sl_splab),length(cparams$qlist),"Number of side panel labels are not equal to the number of plotted runs."))
         }
       }
-
+      
       
     }else{
       sl_splab <- NA
@@ -2473,7 +2477,7 @@ shinyServer(function(input,output,session) {
       if(is.null(input$in_legendkeysize)){sl_legendkeysize <- 2}else{sl_legendkeysize <- input$in_legendkeysize}
       #validate(fn_validate(try(input$in_legendspacing),message1="Argument 'in_legendspacing' missing."))
       if(is.null(input$in_legendspacing)){sl_legendspacing <- 2}else{sl_legendspacing <- input$in_legendspacing}
-
+      
       #validate(fn_validate(try(input$in_legendrow),message1="Argument 'in_legendrow' missing."))
       if(is.null(input$in_legendrow)){sl_legendrow <- NA}else{sl_legendrow <- input$in_legendrow}
       if(is.na(sl_legendrow)) sl_legendrow <- NULL
@@ -2614,7 +2618,7 @@ shinyServer(function(input,output,session) {
   # single line barplot output image
   
   output$out_plot_barplot <- renderImage({
-
+    
     sl_outputfilename <- paste0(fn_pophelper(),"_barplot",sep="")
     #if(is.null(store_general$qlist)) fn_sl_core()
     cparams <- fn_sl_core()
@@ -2659,15 +2663,15 @@ shinyServer(function(input,output,session) {
           showyaxis=params$showyaxis,showticks=params$showticks,ticksize=params$ticksize,
           ticklength=params$ticklength,panelratio=params$panelratio,
           imgtype="png",height=height,width=width,dpi=res)
-
+    
     progress$set(message="Drawing plot...",value=0.8)
     
     if(!any(is.na(cparams$grplab))) {labs <- nrow(cparams$grplab)}else{labs <- 0}
     dims <- getDim(ind=max(sapply(cparams$qlist,nrow)),height=height,
-                       width=width,dpi=res,units="cm",
-                       imgtype="png",grplabheight=params$grplabheight,
-                       labs=labs,plotnum=length(cparams$qlist),
-                       showindlab=params$showindlab,sharedindlab=params$sharedindlab)
+                   width=width,dpi=res,units="cm",
+                   imgtype="png",grplabheight=params$grplabheight,
+                   labs=labs,plotnum=length(cparams$qlist),
+                   showindlab=params$showindlab,sharedindlab=params$sharedindlab)
     
     progress$set(message="Drawing plot...",value=0.9)
     
@@ -2707,39 +2711,39 @@ shinyServer(function(input,output,session) {
     progress$set(message="Downloading plot...",value=0.6)
     
     sl_outputfilename <- gsub(".pdf$","",gsub(".tiff$","",gsub(".jpg$","",gsub(".png$","",fn_downloadplotname()))))
-
+    
     plotQ(qlist=cparams$qlist,imgoutput=cparams$imgoutput,
-                     outputfilename=sl_outputfilename,clustercol=cparams$clustercol,sortind=cparams$sortind,
-                     grplab=cparams$grplab,selgrp=cparams$selgrp,ordergrp=cparams$ordergrp,subsetgrp=cparams$subsetgrp,
-                     grpmean=cparams$grpmean,panelspacer=params$panelspacer,showsp=params$showsp,
-                     sppos=params$sppos,splab=params$splab,splabsize=params$splabsize,splabcol=params$splabcol,
-                     spbgcol=params$spbgcol,showtitle=params$showtitle,titlelab=params$titlelab,
-                     titlehjust=params$titlehjust,titlevjust=params$titlevjust,titlesize=params$titlesize,
-                     titlecol=params$titlecol,titlespacer=params$titlespacer,showsubtitle=params$showsubtitle,
-                     subtitlelab=params$subtitlelab,subtitlehjust=params$subtitlehjust,
-                     subtitlevjust=params$subtitlevjust,subtitlesize=params$subtitlesize,
-                     subtitlecol=params$subtitlecol,subtitlespacer=params$subtitlespacer,
-                     grplabspacer=params$grplabspacer,grplabheight=params$grplabheight,
-                     grplabpos=params$grplabpos,grplabsize=params$grplabsize,
-                     grplabangle=params$grplabangle,grplabjust=params$grplabjust,
-                     grplabcol=params$grplabcol,showindlab=params$showindlab,sharedindlab=params$sharedindlab,
-                     useindlab=cparams$useindlab,indlabwithgrplab=cparams$indlabwithgrplab,
-                     indlabspacer=params$indlabspacer,indlabheight=params$indlabheight,
-                     indlabsep=cparams$indlabsep,indlabsize=params$indlabsize,indlabangle=params$indlabangle,
-                     indlabvjust=params$indlabvjust,indlabhjust=params$indlabhjust,indlabcol=params$indlabcol,
-                     pointsize=params$pointsize,pointcol=params$pointcol,pointtype=params$pointtype,
-                     linepos=params$linepos,linesize=params$linesize,linetype=params$linetype,
-                     linecol=params$linecol,showdiv=params$showdiv,
-                     divgrp=params$divgrp,divcol=params$divcol,divtype=params$divtype,
-                     divsize=params$divsize,showlegend=params$showlegend,legendlab=params$legendlab,
-                     legendpos=params$legendpos,legendkeysize=params$legendkeysize,
-                     legendtextsize=params$legendtextsize,legendspacing=params$legendspacing,
-                     legendrow=params$legendrow,barsize=params$barsize,
-                     barbordersize=params$barbordersize,barbordercolour=params$barbordercolour,
-                     showyaxis=params$showyaxis,showticks=params$showticks,ticksize=params$ticksize,
-                     ticklength=params$ticklength,panelratio=params$panelratio,
-                     imgtype=input$in_format,height=input$in_height,
-                     width=input$in_width,dpi=as.integer(input$in_res))
+          outputfilename=sl_outputfilename,clustercol=cparams$clustercol,sortind=cparams$sortind,
+          grplab=cparams$grplab,selgrp=cparams$selgrp,ordergrp=cparams$ordergrp,subsetgrp=cparams$subsetgrp,
+          grpmean=cparams$grpmean,panelspacer=params$panelspacer,showsp=params$showsp,
+          sppos=params$sppos,splab=params$splab,splabsize=params$splabsize,splabcol=params$splabcol,
+          spbgcol=params$spbgcol,showtitle=params$showtitle,titlelab=params$titlelab,
+          titlehjust=params$titlehjust,titlevjust=params$titlevjust,titlesize=params$titlesize,
+          titlecol=params$titlecol,titlespacer=params$titlespacer,showsubtitle=params$showsubtitle,
+          subtitlelab=params$subtitlelab,subtitlehjust=params$subtitlehjust,
+          subtitlevjust=params$subtitlevjust,subtitlesize=params$subtitlesize,
+          subtitlecol=params$subtitlecol,subtitlespacer=params$subtitlespacer,
+          grplabspacer=params$grplabspacer,grplabheight=params$grplabheight,
+          grplabpos=params$grplabpos,grplabsize=params$grplabsize,
+          grplabangle=params$grplabangle,grplabjust=params$grplabjust,
+          grplabcol=params$grplabcol,showindlab=params$showindlab,sharedindlab=params$sharedindlab,
+          useindlab=cparams$useindlab,indlabwithgrplab=cparams$indlabwithgrplab,
+          indlabspacer=params$indlabspacer,indlabheight=params$indlabheight,
+          indlabsep=cparams$indlabsep,indlabsize=params$indlabsize,indlabangle=params$indlabangle,
+          indlabvjust=params$indlabvjust,indlabhjust=params$indlabhjust,indlabcol=params$indlabcol,
+          pointsize=params$pointsize,pointcol=params$pointcol,pointtype=params$pointtype,
+          linepos=params$linepos,linesize=params$linesize,linetype=params$linetype,
+          linecol=params$linecol,showdiv=params$showdiv,
+          divgrp=params$divgrp,divcol=params$divcol,divtype=params$divtype,
+          divsize=params$divsize,showlegend=params$showlegend,legendlab=params$legendlab,
+          legendpos=params$legendpos,legendkeysize=params$legendkeysize,
+          legendtextsize=params$legendtextsize,legendspacing=params$legendspacing,
+          legendrow=params$legendrow,barsize=params$barsize,
+          barbordersize=params$barbordersize,barbordercolour=params$barbordercolour,
+          showyaxis=params$showyaxis,showticks=params$showticks,ticksize=params$ticksize,
+          ticklength=params$ticklength,panelratio=params$panelratio,
+          imgtype=input$in_format,height=input$in_height,
+          width=input$in_width,dpi=as.integer(input$in_res))
     
     progress$inc(0.9,message="Downloading plot...")
   }
@@ -2760,7 +2764,7 @@ shinyServer(function(input,output,session) {
   # UI: intplotoptions -----------------------------------------------
   output$ui_intplotoptions <- renderUI({
     req(store_general$qlist)
-  
+    
     div(
       div(
         h3("> Interactive options"),
@@ -2788,7 +2792,7 @@ shinyServer(function(input,output,session) {
                     ordergrp=coredata[["ordergrp"]],subsetgrp=coredata[["subsetgrp"]],
                     grpmean=coredata[["grpmean"]],useindlab=coredata[["useindlab"]],
                     indlabwithgrplab=coredata[["indlabwithgrplab"]],indlabsep=coredata[["indlabsep"]])
-
+    
     hc <- dfa$df %>% dplyr::mutate(x=as.factor(x)) %>%
       hchart(.,"column",hcaes(x="x",y="y",group="group")) %>%
       hc_xAxis(title=list(text=NULL),allowDecimals=FALSE,categories=dfa$df$ind) %>%
@@ -2837,8 +2841,8 @@ shinyServer(function(input,output,session) {
     if(is.null(input$ip_title)) {ip_title <- FALSE}else{ip_title <- input$ip_title}
     
     return(list(height=ip_height,width=ip_width,border=ip_border,
-         grpwidth=ip_grpwidth,legend=ip_legend,credit=ip_credit,
-         title=ip_title))
+                grpwidth=ip_grpwidth,legend=ip_legend,credit=ip_credit,
+                title=ip_title))
   })
   
   # ER: er_int ----------------------------------------------------------------
@@ -3014,6 +3018,6 @@ shinyServer(function(input,output,session) {
     cat("\nFN_SL_STD\n")
     print(fn_sl_std())
   })
-    
+  
   ## INT PLOT OPTS =============================================================
 })

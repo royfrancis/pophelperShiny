@@ -105,11 +105,11 @@ fn_update <- function()
 fn_dir <- function(currwd=NULL)
 {
   if(is.null(currwd)) currwd <- getwd()
-
+  
   #Create working directory
   newwd <- paste0(currwd,"/",paste0(format(Sys.time(),"%Y%m%d%H%M%S"),sample(1:1000,1)))
   dir.create(newwd)
-
+  
   return(newwd)
 }
 
@@ -241,7 +241,7 @@ getColoursWa <- function(k,scheme,palette)
     x3 <- as.integer(sapply(x2,function(x) x[1]))
     return(x[x3])
   }
-
+  
   col1 <- NULL
   #modified rich.colors() fn from gplots package
   r.colors <- function(n)
@@ -300,7 +300,7 @@ getColoursWa <- function(k,scheme,palette)
     if (k <= length(col1)) return(col1[1:k])
     if (k > length(col1)) {return("high_k")}
   }
-
+  
   if(scheme == "Retro")
   {
     col1 <- c("#01948E","#A9C4E2","#E23560","#01A7B3","#FDA963","#323665","#EC687D")
@@ -371,7 +371,7 @@ getColoursWa <- function(k,scheme,palette)
       if(k>9) {
         return("high_k")
       }else{
-          return(RColorBrewer::brewer.pal(k,palette))
+        return(RColorBrewer::brewer.pal(k,palette))
       }
     }
     
@@ -380,7 +380,7 @@ getColoursWa <- function(k,scheme,palette)
       if(k>8) {
         return("high_k")
       }else{
-          return(RColorBrewer::brewer.pal(k,palette))
+        return(RColorBrewer::brewer.pal(k,palette))
       }
     }
     
@@ -388,19 +388,19 @@ getColoursWa <- function(k,scheme,palette)
     if(any(palette %in% elevencols)) {
       if(k>11) {
         return("high_k")
-        }else{
-            return(RColorBrewer::brewer.pal(k,palette))
-        }
+      }else{
+        return(RColorBrewer::brewer.pal(k,palette))
       }
+    }
     
     twelvecols <- c("Set3","Paired")
     if(any(palette %in% twelvecols)) {
       if(k>12) {
         return("high_k")
-        }else{
-          return(RColorBrewer::brewer.pal(k,palette))
-        }
+      }else{
+        return(RColorBrewer::brewer.pal(k,palette))
       }
+    }
   }
 }
 
@@ -416,7 +416,7 @@ divopenh3 <- function(id=NA,title=NA,...)
 divopenh4 <- function(id=NA,title=NA,...)
 {
   div(HTML(paste0("<h4 data-toggle='collapse' data-target='#",id,"'>",title,"</h4>",sep="")),
-    div(id=id,class='collapse in',...)
+      div(id=id,class='collapse in',...)
   )
 }
 
@@ -424,8 +424,8 @@ divopenh4 <- function(id=NA,title=NA,...)
 divclosedh4 <- function(id=NA,title=NA,...)
 {
   div(style="padding-right:5px;padding-left:5px;",
-    HTML(paste0("<h4 data-toggle='collapse' data-target='#",id,"'>",title,"</h4>",sep="")),
-    div(id=id,class='collapse',...)
+      HTML(paste0("<h4 data-toggle='collapse' data-target='#",id,"'>",title,"</h4>",sep="")),
+      div(id=id,class='collapse',...)
   )
 }
 
@@ -631,7 +631,7 @@ intPlotQ <- function(dfr,sortind=NA,grplab=NA,selgrp=NA,ordergrp=F,subsetgrp=NA,
   }else{
     grplabcheck <- FALSE
   }
-
+  
   # add rownames
   if(!useindlab) row.names(dfr) <- sprintf(paste0("%",paste0(rep(0,nchar(nrow(dfr))),collapse=""),nchar(nrow(dfr)),"d"),1:nrow(dfr))
   corder <- 1:nrow(dfr)
@@ -640,9 +640,9 @@ intPlotQ <- function(dfr,sortind=NA,grplab=NA,selgrp=NA,ordergrp=F,subsetgrp=NA,
   if(grplabcheck)
   {
     templist <- grpLabels(dframe=dfr,grplab=grplabloop,selgrp=selgrp,
-                                      subsetgrp=subsetgrp,ordergrp=ordergrp,grpmean=grpmean,
-                                      indlabwithgrplab=indlabwithgrplab,indlabsep=indlabsep,
-                                      corder=corder)
+                          subsetgrp=subsetgrp,ordergrp=ordergrp,grpmean=grpmean,
+                          indlabwithgrplab=indlabwithgrplab,indlabsep=indlabsep,
+                          corder=corder)
     dfr <- templist$dframe
     grplabloop <- templist$grplab
     corder <- templist$corder
@@ -652,7 +652,7 @@ intPlotQ <- function(dfr,sortind=NA,grplab=NA,selgrp=NA,ordergrp=F,subsetgrp=NA,
     if(!is.na(sortind))
     {
       templist <- sortInd(dframe=dfr,grplab=grplabloop,selgrp=selgrp,ordergrp=ordergrp,
-                                      sortind=sortind,corder=corder)
+                          sortind=sortind,corder=corder)
       dfr <- templist$dframe
       grplabloop <- templist$grplab
       corder <- templist$corder
@@ -668,7 +668,7 @@ intPlotQ <- function(dfr,sortind=NA,grplab=NA,selgrp=NA,ordergrp=F,subsetgrp=NA,
       rm(templist)
     }
   }
-
+  
   #rownames(grplabloop) <- rownames(dfr)
   #dfr <- merge(dfr,grplabloop,by=0)
   #rownames(dfr) <- dfr$Row.names
@@ -678,7 +678,7 @@ intPlotQ <- function(dfr,sortind=NA,grplab=NA,selgrp=NA,ordergrp=F,subsetgrp=NA,
   #dfr$run <- factor(rep(1,length.out=nrow(dfr)))
   dfr$x <- seq(from=1,to=nrow(dfr))
   #dfr$corder <- corder
-
+  
   if(grplabcheck)
   {
     fun1 <- function(x) paste0(paste0("<b>",colnames(grplabloop),":</b> "),x,collapse="<br>")
@@ -1322,7 +1322,7 @@ clumppExportWa <- function(qlist=NULL,prefix=NA,parammode=NA,paramrep=NA,useexe=
       # autorun clumpp executable
       if(useexe)
       {
-
+        
         if(tolower(Sys.info()[['sysname']])=="windows")
         {
           file.copy(paste0(exd,"/clumpp_windows_1.1.2b.exe"),".")
@@ -1353,7 +1353,7 @@ clumppExportWa <- function(qlist=NULL,prefix=NA,parammode=NA,paramrep=NA,useexe=
           tryCatch(system("./clumpp_linux_1.1.2b_64bit"),error = function(c) paste0("CLUMPP execution failed."))
           unlink("clumpp_linux_1.1.2b_64bit",force=TRUE)
         }
-
+        
       }
       
       setwd(paste(currwd))

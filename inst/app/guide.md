@@ -276,7 +276,7 @@ Francis, R. M. (2017). POPHELPER: an R package and web app to analyse and visual
 10. Vincent Nijs, Forest Fang, Trestle Technology, LLC and Jeff Allen (2018). shinyAce: Ace Editor Bindings for Shiny. R package version 0.3.1. https://CRAN.R-project.org/package=shinyAce  
 11. R Development Core Team (2013) R: A language and environment for statistical computing. R Foundation for Statistical Computing. Vienna. http://www.R-project.org/  
 12. Simon Garnier (2018). viridisLite: Default Color Maps from 'matplotlib' (Lite Version). R package version 0.3.0. https://CRAN.R-project.org/package=viridisLite  
-13. Wickham H, Romain Francois, Lionel Henry and Kirill Müller (2018). dplyr: A Grammar of Data Manipulation. R package version 0.7.6. https://CRAN.R-project.org/package=dplyr  
+13. Wickham H, Romain Francois, Lionel Henry and Kirill Muller (2018). dplyr: A Grammar of Data Manipulation. R package version 0.7.6. https://CRAN.R-project.org/package=dplyr  
 14. Hadley Wickham and Lionel Henry (2018). tidyr: Easily Tidy Data with 'spread()' and 'gather()' Functions. R package version 0.8.1. https://CRAN.R-project.org/package=tidyr  
 15. Wickham H (2009) ggplot2: elegant graphics for data analysis Springer.  
 16. Wickham H (2011) The Split-Apply-Combine Strategy for Data Analysis. Journal of Statistical Software 40, 1-29.  

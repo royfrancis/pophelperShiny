@@ -10,14 +10,14 @@ The app can be installed as a regular R package and run locally. See instruction
 
 ## Installation  
 
-You need to have R (> 3.5.0) statistical package installed on your system. [R](https://www.r-project.org/) is open-source and freely available to download for Windows, Mac and other OS. Then, basically run the code below. This installs the dependency packages, then it installs `pophelperShiny` from `github` using the `devtools` package.  
+You need to have the latest [JAVA JDK and JRE](http://www.oracle.com/technetwork/java/javase/downloads/index.html) installed on your system. You need to have R (> 3.5.0) statistical package installed on your system. [R](https://www.r-project.org/) is open-source and freely available to download for Windows, Mac and other OS. Then, basically run the code below. This installs the dependency packages, then it installs `pophelperShiny` from `github` using the `devtools` package.  
 
 ```coffee
 # install dependencies and devtools
 install.packages(c("Cairo","colourpicker","dplyr","DT","fields","ggplot2",
                    "gridExtra","gtable","highcharter","markdown","RColorBrewer",
                    "rJava","shiny","shinyAce","shinyBS","shinyjs","shinythemes",
-                   "tidyr","viridisLite","xlsx""devtools"),dependencies=T)
+                   "tidyr","viridisLite","xlsx","devtools"),dependencies=T)
 
 # install the package from GitHub
 devtools::install_github('royfrancis/pophelperShiny')
@@ -29,7 +29,7 @@ library(pophelperShiny)
 runPophelper()
 ```
 
-Note that this app includes binary executable CLUMPP for aligning run within K. This may not work on all OS and versions.
+If using the RStudio browser, click on 'Open in Browser' to open in a system browser. This allows to download files. Note that this app includes binary executable CLUMPP for aligning run within K. This may not work on all OS and versions.
 
 `pophelperShiny` has been currently tested on the following systems: 
 
@@ -45,6 +45,6 @@ The `pophelperShiny` R package is offered free and without warranty of any kind,
 
 ### Contact
 
-If you have an comments, suggestions, corrections or ideas on ways to improve or extend this package, feel free to contact me. Submit an issue on the [Github issues page](/issues).  
+If you have an comments, suggestions, corrections or ideas on ways to improve or extend this package, feel free to contact me. Submit an issue on the [Github issues page](https://github.com/royfrancis/pophelperShiny/issues).  
 
 2018 | Roy M Francis  

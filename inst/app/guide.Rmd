@@ -401,7 +401,7 @@ Francis, R. M. (2017). POPHELPER: an R package and web app to analyse and visual
 
 # 11 Contact
 
-If you have any comments, suggestions or would like to report an issue, please create an issue on the Pophelper Web App [GitHub](https://github.com/royfrancis/pophelper_shinyapp) page.  
+If you have any comments, suggestions or would like to report an issue, please create an issue on the Pophelper Web App [GitHub](https://github.com/royfrancis/pophelperShiny) page.  
 
 __End of Document__
 

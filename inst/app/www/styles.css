@@ -15,6 +15,11 @@ a:visited {
   color: #67a2d4;
 }
 
+/* button text */
+.btn-default {
+  color: #ffffff !important;
+}
+
 /*
 button colour
 .btn-primary {
