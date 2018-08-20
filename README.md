@@ -41,7 +41,7 @@ If using the RStudio browser, click on 'Open in Browser' to open in a system bro
 
 ### Disclaimer
 
-The `pophelperShiny` R package is offered free and without warranty of any kind, either expressed or implied. I will not be held liable to you for any damage arising out of the use, modification or inability to use this program. `pophelperShiny` R package can be used, redistributed and/or modified freely for non-commercial purposes subject to the original source being properly cited. Licensed under GPL-3. Please make sure you verify all your results.  
+The `pophelperShiny` R package is offered free and without warranty of any kind, either expressed or implied. I will not be held liable to you for any damage arising out of the use, modification or inability to use this program. Please make sure you verify all your results.  
 
 ### Contact
 
