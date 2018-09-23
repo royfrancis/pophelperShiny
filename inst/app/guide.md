@@ -19,7 +19,7 @@ output:
 
 
 <h1 class="toc-ignore rtitle">User Guide</h1>
-<h4 class="toc-ignore">13-Aug-2018</h4>
+<h4 class="toc-ignore">15-Aug-2018</h4>
 </br>
 
 # 1. General
@@ -29,9 +29,9 @@ It is best to adjust widgets in the order from top left to bottom right. This is
 
 # 2. Features
 
-* Upload 'ADMIXTURE', 'BAPS', 'fastSTRUCTURE', 'STRUCTURE', 'TESS' or any tabular run files.  
+* Upload STRUCTURE, BAPS, fastSTRUCTURE, STRUCTURE, TESS or any tabular run files.  
 * Tabulate and summarise runs by *K*.  
-* Evanno method for estimation of optimal *K* for 'STRUCTURE' files. 
+* Evanno method for estimation of optimal *K* for STRUCTURE files. 
 * Single or joined barplots from any run file.  
 * Adjust cluster colours
 * Align/Merge clusters between runs using CLUMPP (equal *K* and equal individuals).  
@@ -43,9 +43,9 @@ It is best to adjust widgets in the order from top left to bottom right. This is
 
 # 3. File upload
 
-Files are uploaded interactively in the *Upload* tab. 'Input format' option 'Auto' should generally work. The following file types are expected: 'STRUCTURE', 'BAPS', 'TESS', 'ADMIXTURE' output files or 'fastSTRUCTURE' meanQ files. If using files as inputs from other softwares or modified files, from spreadsheets etc, they must be all numeric tabular data without headers in tab-delimited, space-delimited or comma-separated format. Decimal must be defined by dot. Combined, aligned and merged CLUMPP file from R package `pophelper` is also supported. If you think, a file format is incorrectly identified, you can manually set 'Input format'. __Mixed file formats are not supported__.  
+Files are uploaded interactively in the *Upload* tab. 'Input format' option 'Auto' should generally work. The following file types are expected: STRUCTURE, BAPS, TESS, ADMIXTURE output files or fastSTRUCTURE meanQ files. If using files as inputs from other softwares or modified files, from spreadsheets etc, they must be all numeric tabular data without headers in tab-delimited, space-delimited or comma-separated format. Decimal must be defined by dot. Combined, aligned and merged CLUMPP file from R package `pophelper` is also supported. If you think, a file format is incorrectly identified, you can manually set 'Input format'. __Mixed file formats are not supported__.  
 
-On successful completion of upload, a summary table of uploaded files is shown. Fields shown are filename, file format and size of the file. File formats identified are 'STRUCTURE', 'BAPS', 'TESS', 'CLUMPP' or 'BASIC' files. Other text files or files of incorrect format are displayed as UNIDENTIFIED. 'ADMIXTURE' and 'fastSTRUCTURE' files are simple tables without headers differing in delimiter spaces. Any text file that is all numeric in a tabular format with space/tab/comma delimiter will be identified as 'BASIC' format.  
+On successful completion of upload, a summary table of uploaded files is shown. Fields shown are filename, file format and size of the file. File formats identified are STRUCTURE, BAPS, TESS, CLUMPP or BASIC files. Other text files or files of incorrect format are displayed as UNIDENTIFIED. ADMIXTURE and fastSTRUCTURE files are simple tables without headers differing in delimiter spaces. Any text file that is all numeric in a tabular format with space/tab/comma delimiter will be identified as BASIC format.  
 
 ![Input preview](www/inputpreview.jpg)  
 
@@ -57,17 +57,17 @@ The *Data* tab shows tabulated and summarised tables.
 
 ## 4.1 Tabulated data
 
-A tabulated table is displayed for a set of one or more identified run files. Tabulated data lists all runs sorted by loci, individuals and *K* for 'STRUCTURE' runs. The table is sorted by individuals and *K* for other run formats. Tabulated data is not displayed if uploaded files consist of mixed formats. The tabulated data can be download using the download button the left side.  
+A tabulated table is displayed for a set of one or more identified run files. Tabulated data lists all runs sorted by loci, individuals and *K* for STRUCTURE runs. The table is sorted by individuals and *K* for other run formats. Tabulated data is not displayed if uploaded files consist of mixed formats. The tabulated data can be download using the download button the left side.  
 
 ## 4.2 Summarised data
 
-The summarised table is created from the tabulated table. For 'STRUCTURE' runs, the summarised data table is sorted by loci, ind, *K* and runs followed by elpdmean, elpdsd, elpdmin and elpdmax. For other run formats, the table is sorted by ind, *K* and runs. Summarised data is not displayed if uploaded files consist of mixed formats. The summarised data can be download using the download button the left side.  
+The summarised table is created from the tabulated table. For STRUCTURE runs, the summarised data table is sorted by loci, ind, *K* and runs followed by elpdmean, elpdsd, elpdmin and elpdmax. For other run formats, the table is sorted by ind, *K* and runs. Summarised data is not displayed if uploaded files consist of mixed formats. The summarised data can be download using the download button the left side.  
  
 # 5. Evanno method
 
-The Evanno method is used to estimate the number of *K*. The method is based on Evanno et al., (2005) and only applicable to 'STRUCTURE' runs. The Evanno method can be performed in the *Evanno* tab.  
+The Evanno method is used to estimate the number of *K*. The method is based on Evanno et al., (2005) and only applicable to STRUCTURE runs. The Evanno method can be performed in the *Evanno* tab.  
 
-The *Input* tab shows a tabulated list of 'STRUCTURE' files on the left side. By default, all runs are selected. A subset of runs can be used for the Evanno analysis by selecting (by clicking) the rows/runs in the input table. A K-Plot (Mean of Estimated Log-likelihood  over *K*) for the selected run is shown on the right side.  
+The *Input* tab shows a tabulated list of STRUCTURE files on the left side. By default, all runs are selected. A subset of runs can be used for the Evanno analysis by selecting (by clicking) the rows/runs in the input table. A K-Plot (Mean of Estimated Log-likelihood  over *K*) for the selected run is shown on the right side.  
 
 The *Output* tab shows a table of the Evanno results showing various derivatives as well as a scatterplots based on the same table. The data is available to download as a text file.  
 
@@ -123,7 +123,7 @@ The 'Colorbrewer' option makes available colour palettes from [Colorbrewer](http
 
 ### 6.1.2 Align clusters/Merge runs
 
-When two or more runs are selected, a dropdown menu is available to align clusters or merge runs using software 'CLUMPP'. Align clusters/Merge runs only works if the selected runs are of same run format, the same *K* and same number of individuals. For structure runs, the number of loci must be same too. When aligning clusters, the same selected runs are plotted with clusters aligned. But, when the merge runs option is selected, all selected runs are collapsed to one barplot.   
+When two or more runs are selected, a dropdown menu is available to align clusters or merge runs using software CLUMPP. Align clusters/Merge runs only works if the selected runs are of same run format, the same *K* and same number of individuals. For structure runs, the number of loci must be same too. When aligning clusters, the same selected runs are plotted with clusters aligned. But, when the merge runs option is selected, all selected runs are collapsed to one barplot.   
 
 ### 6.1.3 Order individuals
 
@@ -242,21 +242,21 @@ The height and width of plots can be adjusted. The size of the bar border and th
 
 # 8. Troubleshooting
 
-+ __Nothing visible in Evanno tab.__ Evanno option is available only for structure runs. Likely issue is that uploaded files are not 'STRUCTURE' runs or consists of mixed formats.  
++ __Nothing visible in Evanno tab:__ Evanno option is available only for structure runs. Likely issue is that uploaded files are not 'STRUCTURE' runs or consists of mixed formats.  
 
-+ __When uploading lots of files, the upload bar tends to be frozen.__ The bar sometimes appear frozen, but the upload is in progress. The summary table should be visible after a few minutes.  
++ __When uploading lots of files to the web app, the upload bar tends to be frozen:__ The bar sometimes appear frozen, but the upload is in progress. The summary table should be visible after a few minutes. Better to zip all the files into one file and upload.  
 
-+ __A popup error with 'The application unexpectedly exited.'.__ This error is reported when the app has crashed. This can happen due to a whole range of unexpected issues. The solution is to refresh the browser and continue as normal. Else, close tab and open webpage in new tab. If this happens consistently, please report to me with explanation on what you were doing when it happened. 
++ __A popup error with 'The application unexpectedly exited.':__ This error is reported when the app has crashed. This can happen due to a whole range of unexpected issues. The solution is to refresh the browser and continue as normal. Else, close tab and open webpage in new tab. If this happens consistently, please report to me with explanation on what you were doing when it happened. 
 
-+ __After working with some files, reuploading new files in the same session often produces a pop-up error like 'The application unexpectedly exited.'__ The solution is to refresh the browser or reload the page and pretend this didn't happen.
++ __After working with some files, reuploading new files in the same session often produces a pop-up error like 'The application unexpectedly exited':__ The solution is to refresh the browser or reload the page and pretend this didn't happen.
 
 + If you want to validate the results (Evanno plot, CLUMPP results) produced here, or if this service does not work, check out [StructureHarvester](http://taylor0.biology.ucla.edu/structureHarvester/).  
 
 + Under standard plot options, the sub sections can be collapsed by clicking on the section title. For example '> Standard options', '> General options' etc. This might be useful to quickly reduce clutter. But note that hidden widgets are not accessible to the plotting function and can lead to strange errors.
 
-+ __App is slow and unresponsive.__ Yes. The app is not intended for large datasets. You should probably use the R package. The app may be slow with multiple simultaneous users. If the app seems to be slow and unresponsive even with small datasets, try again later.  
++ __Online app is slow and unresponsive:__ Yes. The app is not intended for large datasets. You should probably use the R package. The app may be slow with multiple simultaneous users. If the app seems to be slow and unresponsive even with small datasets, try again later.  
 
-> This a a web based GUI running on a standard server and not a computing cluster. Be reasonable. Please do not use massive datasets. The computationally demanding part is the plotting. Data tabs and Evanno method should work fine. I have tried 25 files with 2000 individuals and plotted them all at the same time. It worked but was quite slow. So, this is pushing the limits here. I have also tried plotting 60 files with 150 individuals. That worked too but a bit slow. Note that interactive plots can be extremely slow (several minutes) with anything more than a few hundred individuals.  
+> If using the online app, note that it is a web based GUI running on a basic server and not a computing cluster. Be reasonable. Please do not use massive datasets. The computationally demanding part is the plotting. Data tabs and Evanno method should work fine. I have tried 25 files with 2000 individuals and plotted them all at the same time. It worked but was quite slow. So, this is pushing the limits here. I have also tried plotting 60 files with 150 individuals. That worked too but a bit slow. Note that interactive plots can be extremely slow (several minutes) with anything more than a few hundred individuals.  
 
 # 9. Citation 
 
@@ -286,7 +286,7 @@ Francis, R. M. (2017). POPHELPER: an R package and web app to analyse and visual
 
 # 11 Contact
 
-If you have any comments, suggestions or would like to report an issue, please create an issue on the Pophelper Web App [GitHub](https://github.com/royfrancis/pophelper_shinyapp) page.  
+If you have any comments, suggestions or would like to report an issue, please create an issue on the PophelperShiny [GitHub](https://github.com/royfrancis/pophelperShiny) page.  
 
 __End of Document__
 

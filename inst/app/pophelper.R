@@ -1,8 +1,8 @@
 # POPHELPER SHINY
 # POPHELPER.R
 # Roy Mathew Francis
-# v2.0.0
-# 13-Aug-2017
+# v2.0.1
+# 17-Sep-2017
 
 # web app version
 # no pophelper::: or pophelper:: statements

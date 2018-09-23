@@ -1,4 +1,4 @@
-# pophelperShiny 2.0.0
+# pophelperShiny 2.0.1
 
 `pophelperShiny` compliments the R package `pophelper` by providing a graphical user interface around the fuctions. This app is used to analyse and visualise population structure from programs such as STRUCTURE, TESS, TESS3, BAPS and numeric delimited formats such as ADMIXTURE or fastSTRUCTURE. The app can be used to read run files to R, tabulate runs, summarise runs, estimate *K* using the Evanno method, align clusters within K using CLUMPP and generate barplot figures.  
 
@@ -14,10 +14,10 @@ You need to have the latest [JAVA JDK and JRE](http://www.oracle.com/technetwork
 
 ```coffee
 # install dependencies and devtools
-install.packages(c("Cairo","colourpicker","dplyr","DT","fields","ggplot2",
+install.packages(c("Cairo","colourpicker","dplyr","DT","ggplot2",
                    "gridExtra","gtable","highcharter","markdown","RColorBrewer",
-                   "rJava","shiny","shinyAce","shinyBS","shinyjs","shinythemes",
-                   "tidyr","viridisLite","xlsx","devtools"),dependencies=T)
+                   "rJava","shiny","shinyAce","shinyBS","shinythemes","tidyr",
+                   "viridisLite","xlsx","devtools"),dependencies=T)
 
 # install the package from GitHub
 devtools::install_github('royfrancis/pophelperShiny')
@@ -36,8 +36,8 @@ If using the RStudio browser, click on 'Open in Browser' to open in a system bro
 + Windows 10, R 3.5.0  
 + Windows 7 64bit, R 3.5.1  
 + Mac High Sierra 10.13.1, R 3.5.1  
-+ CentOS Linux release 7.5.1804 , R 3.5.0  (App does not close gracefully)
-+ Ubuntu Linux 16.04 LTS, R 3.5.1  
++ CentOS Linux release 7.5.1804 , R 3.5.0  (App does not close gracefully)  
++ Ubuntu Linux 16.04 LTS, R 3.5.1   
 
 ### Disclaimer
 

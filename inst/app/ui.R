@@ -1,8 +1,8 @@
 # POPHELPER SHINY
 # UI.R
 # Roy Mathew Francis
-# v2.0.0
-# 13-Aug-2017
+# v2.0.1
+# 17-Sep-2017
 
 # Change versions.md
 # Change version in header of ui.R 

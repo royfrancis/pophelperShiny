@@ -20,7 +20,7 @@ shinyServer(function(input,output,session) {
                                   tabulateq=NULL,
                                   summariseq=NULL,
                                   currwd=rootwd,
-                                  newwd=fn_dir(rootwd))
+                                  newwd=fn_dir())
   store_evanno <- reactiveValues(evanno_check=NULL,
                                  evanno=NULL)
   store_plot_helper <- reactiveValues(selected_run=NULL,
@@ -219,7 +219,6 @@ shinyServer(function(input,output,session) {
     store_general$tabulateq
   },
   selection="none",
-  #extensions="TableTools",
   options=list(
     #dom="T<'clear'>lfrtip",
     #tableTools=list(sSwfPath=copySWF(pdf=TRUE)),
@@ -247,7 +246,6 @@ shinyServer(function(input,output,session) {
     store_general$summariseq
   },
   selection="none",
-  #extensions="TableTools",
   options=list(
     #dom="T<'clear'>lfrtip",
     #tableTools=list(sSwfPath=copySWF(pdf=TRUE)),
@@ -635,7 +633,6 @@ shinyServer(function(input,output,session) {
     store_evanno$evanno
   },
   selection="none",
-  #extensions="TableTools",
   options=list(
     #dom="T<'clear'>lfrtip",
     #tableTools=list(sSwfPath=copySWF(pdf=TRUE)),

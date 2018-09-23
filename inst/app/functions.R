@@ -1,13 +1,13 @@
 # POPHELPER SHINY
 # FUNCTIONS.R
 # Roy Mathew Francis
-# v2.0.0
-# 13-Aug-2017
+# v2.0.1
+# 17-Sep-2017
 
 # > sessionInfo()
 # R version 3.5.1 (2018-07-02)
 # Platform: x86_64-w64-mingw32/x64 (64-bit)
-# Running under: Windows 7 x64 (build 7601) Service Pack 1
+# Running under: Windows >= 8 x64 (build 9200)
 # 
 # Matrix products: default
 # 
@@ -23,39 +23,41 @@
 # [6] datasets  methods   base     
 # 
 # other attached packages:
-#   [1] shinythemes_1.1.1  Cairo_1.5-9        xlsx_0.6.1        
-# [4] rJava_0.9-10       shinyBS_0.61       viridisLite_0.3.0 
-# [7] colourpicker_1.0   shinyAce_0.3.1     DT_0.4            
-# [10] rlist_0.4.6.1      gtable_0.2.0       gridExtra_2.3     
-# [13] markdown_0.8       fields_9.6         maps_3.3.0        
-# [16] spam_2.2-0         dotCall64_1.0-0    shiny_1.1.0       
-# [19] RColorBrewer_1.1-2 highcharter_0.5.0  dplyr_0.7.6       
-# [22] tidyr_0.8.1        stringr_1.3.1      ggplot2_3.0.0     
-# [25] captioner_2.2.3    bookdown_0.7       knitr_1.20        
+#   [1] bindrcpp_0.2.2     xlsx_0.6.1        
+# [3] shinyBS_0.61       shinythemes_1.1.1 
+# [5] Cairo_1.5-9        rJava_0.9-10      
+# [7] dplyr_0.7.6        highcharter_0.5.0 
+# [9] viridisLite_0.3.0  colourpicker_1.0  
+# [11] shinyAce_0.3.1     DT_0.4            
+# [13] RColorBrewer_1.1-2 gtable_0.2.0      
+# [15] gridExtra_2.3      tidyr_0.8.1       
+# [17] markdown_0.8       ggplot2_3.0.0     
+# [19] fields_9.6         maps_3.3.0        
+# [21] spam_2.2-0         dotCall64_1.0-0   
+# [23] shiny_1.1.0       
 # 
 # loaded via a namespace (and not attached):
-#   [1] jsonlite_1.5      assertthat_0.2.0  TTR_0.23-3       
-# [4] xlsxjars_0.6.1    yaml_2.2.0        pillar_1.3.0     
-# [7] backports_1.1.2   lattice_0.20-35   glue_1.3.0       
-# [10] digest_0.6.15     promises_1.0.1    colorspace_1.3-2 
-# [13] htmltools_0.3.6   httpuv_1.4.5      plyr_1.8.4       
-# [16] pkgconfig_2.0.1   broom_0.5.0       purrr_0.2.5      
-# [19] xtable_1.8-2      scales_1.0.0      later_0.7.3      
-# [22] tibble_1.4.2      withr_2.1.2       sourcetools_0.1.7
-# [25] lazyeval_0.2.1    quantmod_0.4-13   magrittr_1.5     
-# [28] crayon_1.3.4      mime_0.5          evaluate_0.11    
-# [31] nlme_3.1-137      xts_0.11-0        rsconnect_0.8.8  
-# [34] tools_3.5.1       data.table_1.11.4 munsell_0.5.0    
-# [37] bindrcpp_0.2.2    compiler_3.5.1    rlang_0.2.1      
-# [40] htmlwidgets_1.2   crosstalk_1.0.0   igraph_1.2.2     
-# [43] miniUI_0.1.1.1    rmarkdown_1.10    curl_3.2         
-# [46] R6_2.2.2          zoo_1.8-3         lubridate_1.7.4  
-# [49] bindr_0.1.1       rprojroot_1.3-2   stringi_1.2.4    
-# [52] Rcpp_0.12.18      tidyselect_0.2.4  xfun_0.3    
+#   [1] Rcpp_0.12.18      lubridate_1.7.4   lattice_0.20-35  
+# [4] xlsxjars_0.6.1    zoo_1.8-3         assertthat_0.2.0 
+# [7] digest_0.6.16     mime_0.5          R6_2.2.2         
+# [10] plyr_1.8.4        backports_1.1.2   pillar_1.3.0     
+# [13] rlang_0.2.2       lazyeval_0.2.1    curl_3.2         
+# [16] rstudioapi_0.7    data.table_1.11.4 miniUI_0.1.1.1   
+# [19] TTR_0.23-3        labeling_0.3      stringr_1.3.1    
+# [22] htmlwidgets_1.2   igraph_1.2.2      munsell_0.5.0    
+# [25] broom_0.5.0       compiler_3.5.1    httpuv_1.4.5     
+# [28] pkgconfig_2.0.2   htmltools_0.3.6   tidyselect_0.2.4 
+# [31] tibble_1.4.2      crayon_1.3.4      withr_2.1.2      
+# [34] later_0.7.4       nlme_3.1-137      jsonlite_1.5     
+# [37] xtable_1.8-3      magrittr_1.5      scales_1.0.0     
+# [40] rlist_0.4.6.1     quantmod_0.4-13   stringi_1.2.4    
+# [43] promises_1.0.1    xts_0.11-1        tools_3.5.1      
+# [46] glue_1.3.0        purrr_0.2.5       crosstalk_1.0.0  
+# [49] rsconnect_0.8.8   yaml_2.2.0        colorspace_1.3-2 
+# [52] bindr_0.1.1    
 
 #load or install required libraries
 library("shiny")
-library("fields") #tim.colors()
 library("ggplot2") #ggplot
 library("markdown") #help page
 library("tidyr") #gather
@@ -92,19 +94,19 @@ options(shiny.deprecation.messages=TRUE)
 #pophelper version
 fn_pophelper <- function()
 {
-  return("pophelperShiny_v2.0.0") 
+  return("pophelperShiny_v2.0.1") 
 }
 
 #pophelper version
 fn_update <- function()
 {
-  return("13-Aug-2018") 
+  return("17-Sep-2018") 
 }
 
 # fn_dir
 fn_dir <- function(currwd=NULL)
 {
-  if(is.null(currwd)) currwd <- getwd()
+  if(is.null(currwd)) currwd <- tempdir()
   
   #Create working directory
   newwd <- paste0(currwd,"/",paste0(format(Sys.time(),"%Y%m%d%H%M%S"),sample(1:1000,1)))
@@ -362,8 +364,26 @@ getColoursWa <- function(k,scheme,palette)
   if(scheme == "Magma") return(viridisLite::magma(n=k))
   if(scheme == "Plasma") return(viridisLite::plasma(n=k))
   if(scheme == "Rich") return(r.colors(k))
-  if(scheme == "Tim") return(fields::tim.colors(k))
   if(scheme == "Rainbow") return(rainbow(k))
+  
+  if(scheme == "Tim") {
+      orig <- c("#00008F", "#00009F", "#0000AF", "#0000BF", "#0000CF", 
+                "#0000DF", "#0000EF", "#0000FF", "#0010FF", "#0020FF", 
+                "#0030FF", "#0040FF", "#0050FF", "#0060FF", "#0070FF", 
+                "#0080FF", "#008FFF", "#009FFF", "#00AFFF", "#00BFFF", 
+                "#00CFFF", "#00DFFF", "#00EFFF", "#00FFFF", "#10FFEF", 
+                "#20FFDF", "#30FFCF", "#40FFBF", "#50FFAF", "#60FF9F", 
+                "#70FF8F", "#80FF80", "#8FFF70", "#9FFF60", "#AFFF50", 
+                "#BFFF40", "#CFFF30", "#DFFF20", "#EFFF10", "#FFFF00", 
+                "#FFEF00", "#FFDF00", "#FFCF00", "#FFBF00", "#FFAF00", 
+                "#FF9F00", "#FF8F00", "#FF8000", "#FF7000", "#FF6000", 
+                "#FF5000", "#FF4000", "#FF3000", "#FF2000", "#FF1000", 
+                "#FF0000", "#EF0000", "#DF0000", "#CF0000", "#BF0000", 
+                "#AF0000", "#9F0000", "#8F0000", "#800000")
+      tc <- colorRampPalette(orig,bias=1,space="rgb",interpolate="spline")
+      return(tc(n=k))
+  }
+  
   if(scheme == "Colorbrewer") 
   {
     ninecols <- c("Set1","Pastel1","BuGn","BuPu","GnBu","OrRd","PuBu","PuRd","RdPu","YlGn","PuBuGn","YlGnBu","YlOrBr","YlOrRd","Blues","Greens","Oranges","Purples","Reds","Greys")
