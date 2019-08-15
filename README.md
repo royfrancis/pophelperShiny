@@ -2,7 +2,7 @@
 
 # pophelperShiny
 
-`pophelperShiny` is an interactive shiny application to use the R package pophelper interactively. This is packaged as an R package to enable easy installation. See the [project website](http://royfrancis.github.io/pophelperShiny/articles/index.html) for more details.
+`pophelperShiny` is an interactive shiny application to use the R package pophelper interactively. This is packaged as an R package to enable easy installation. See the [project website](http://royfrancis.github.io/pophelperShiny) for more details.
 
 ### Disclaimer
 
