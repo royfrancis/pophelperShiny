@@ -1,0 +1,79 @@
+## GITHUB ACTION FOR R PACKAGE
+## Build, check
+## Required secrets
+## TOKEN
+
+name: build
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+jobs:
+  linux:
+    name: ubuntu
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        r: [3.5.3,3.6.3,4.0.0]
+    steps:
+      - uses: actions/checkout@v1
+      - uses: r-lib/actions/setup-r@master
+        with:
+          r-version: ${{matrix.r}}
+
+      - name: Install linux dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libfreetype6-dev libcurl4-openssl-dev libssl-dev libxml2-dev libnlopt-dev libudunits2-dev libgeos-dev libfontconfig1-dev gdal-bin libgdal-dev libcairo2-dev libxt-dev mesa-common-dev libglu1-mesa-dev libx11-dev
+
+      - name: Check R installation
+        run: Rscript -e "print('R installation works!')"
+
+      - name: Cache R packages
+        id: cache-r-packages
+        uses: actions/cache@v2
+        with:
+          path: "/home/runner/work/_temp/Library"
+          key: ${{runner.os}}-${{matrix.r}}-$(ls /home/runner/work/_temp/Library/ | sha256sum)
+
+      - name: Install R dependencies
+        if: steps.cache-r-packages.outputs.cache-hit != 'true'
+        run: |
+          Rscript -e "install.packages(c('remotes','rcmdcheck'))"
+          Rscript -e "remotes::install_deps(pkgdir='.',dependencies=TRUE,repos='https://cran.rstudio.com/')"
+      - name: RMD check and install package
+        run: |
+          Rscript -e "rcmdcheck::rcmdcheck(args = '--no-manual', error_on = 'warning', check_dir = 'check')"
+          R CMD INSTALL .
+
+  windows:
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        r: [3.5.3,3.6.3,4.0.0]
+    steps:
+      - uses: actions/checkout@v1
+      - uses: r-lib/actions/setup-r@master
+        with:
+          r-version: ${{matrix.r}}
+
+      - name: Cache R packages
+        id: cache-r-packages
+        uses: actions/cache@v2
+        with:
+          path: "C:/R/library"
+          key: ${{runner.os}}-${{matrix.r}}
+
+      - name: Install R dependencies
+        if: steps.cache-r-packages.outputs.cache-hit != 'true'
+        run: |
+          Rscript -e "install.packages(c('remotes','rcmdcheck','stringi'),lib='C:/R/library')"
+          Rscript -e "remotes::install_deps(pkgdir='.',dependencies=TRUE,repos='https://cran.rstudio.com/',lib='C:/R/library')"
+          Rscript -e "(print(.libPaths()))"
+      - name: RMD check and install package
+        run: |
+          Rscript -e "rcmdcheck::rcmdcheck(args = '--no-manual', error_on = 'warning', check_dir = 'check')"
+
