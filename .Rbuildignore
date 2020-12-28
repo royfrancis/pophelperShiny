@@ -1,0 +1,14 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+\.Rhistory
+\.Rdata
+pkgdown/
+_pkgdown.yml
+docs/
+index.md
+NEWS.md
+.github/
+.git/
+vignettes/
+..Rcheck/
+Dockerfile

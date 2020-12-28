@@ -1,0 +1,40 @@
+Package: pophelperShiny
+Type: Package
+Title: Interactive shiny GUI around pophelper R package
+Version: 2.1.1
+Date: 2020-12-28
+Author: Roy Mathew Francis
+Authors@R: person("Roy", "Francis", email = "roy.m.francis@outlook.com",role = c("aut", "cre"))
+Maintainer: Roy Mathew Francis <roy.m.francis@outlook.com>
+Description: Interactive interface to pophelper using shiny web framework.
+URL: https://github.com/royfrancis/pophelperShiny
+Depends:
+    R(>= 3.6)
+Imports:
+    colourpicker,
+    DT,
+    ggplot2,
+    gridExtra,
+    highcharter,
+    htmlwidgets,
+    magrittr,
+    pophelper(>= 2.3.1),
+    RColorBrewer,
+    shiny,
+    shinyAce,
+    shinyBS,
+    shinythemes,
+    shinyWidgets,
+    tidyr,
+    viridisLite,
+    writexl
+Suggests:
+    captioner,
+    knitr,
+    rmarkdown
+Remotes:
+    royfrancis/pophelper
+License: GPL-3
+Encoding: UTF-8
+BugReports: https://github.com/royfrancis/pophelperShiny/issues
+RoxygenNote: 7.1.1

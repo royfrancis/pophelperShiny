@@ -1,0 +1,51 @@
+/* POPHELPERSHINY */
+/* Custom CSS styles */
+
+/* link colour */
+a, a:link, a:hover, a:active {
+  color: #428BCA;
+}
+
+/* link hover colour */
+a:visited {
+  color: #67a2d4;
+}
+
+p {
+  line-height: 1.6;
+}
+
+/* button text */
+.btn-default {
+  color: #ffffff !important;
+}
+
+/* colour palette picker images */
+.colour-palette-picker {
+ display: inline;
+ vertical-align: middle;
+ padding-left: 10px;
+}
+
+/* colour palette picker */
+.picker {
+  background-color: transparent;
+  border: 1px solid #dce4ec;
+} 
+
+.picker:hover {
+  color: #2c3e50;
+}
+
+.shiny-output-error-validation {
+  color: #428BCA;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.help-note {
+  font-size: 0.9em;
+  color: #C0C0C0;
+  padding: 6px;
+  border-radius: 3px;
+}
