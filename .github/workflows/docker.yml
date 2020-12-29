@@ -6,12 +6,12 @@ on:
 
 jobs:
   push_to_registry:
-    name: Push docker image to dockerhub
+    name: Build/Push docker image to dockerhub
     runs-on: ubuntu-latest
     steps:
-      - name: check out the repo
+      - name: Check out the repo
         uses: actions/checkout@v2
-      - name: push to dockerhub
+      - name: Build and push to dockerhub
         uses: docker/build-push-action@v1
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
