@@ -16,7 +16,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        r: [3.5.3,3.6.3,4.0.0]
+        r: [3.5,3.6,4.0]
     steps:
       - uses: actions/checkout@v1
       - uses: r-lib/actions/setup-r@master
@@ -42,7 +42,7 @@ jobs:
         if: steps.cache-r-packages.outputs.cache-hit != 'true'
         run: |
           Rscript -e "install.packages(c('remotes','rcmdcheck'))"
-          Rscript -e "remotes::install_github('royfrancis/pophelper')"
+          Rscript -e "remotes::install_github('royfrancis/pophelper',dependencies=TRUE)"
           Rscript -e "remotes::install_deps(pkgdir='.',dependencies=TRUE,repos='https://cran.rstudio.com/')"
       - name: RMD check and install package
         run: |
@@ -54,7 +54,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        r: [3.5.3,3.6.3,4.0.0]
+        r: [3.5,3.6,4.0]
     steps:
       - uses: actions/checkout@v1
       - uses: r-lib/actions/setup-r@master
@@ -72,7 +72,7 @@ jobs:
         if: steps.cache-r-packages.outputs.cache-hit != 'true'
         run: |
           Rscript -e "install.packages(c('remotes','rcmdcheck','stringi'),lib='C:/R/library')"
-          Rscript -e "remotes::install_github('royfrancis/pophelper')"
+          Rscript -e "remotes::install_github('royfrancis/pophelper',dependencies=TRUE)"
           Rscript -e "remotes::install_deps(pkgdir='.',dependencies=TRUE,repos='https://cran.rstudio.com/',lib='C:/R/library')"
           Rscript -e "(print(.libPaths()))"
       - name: RMD check and install package
