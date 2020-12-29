@@ -43,3 +43,9 @@ p {
   margin-bottom: 20px;
 }
 
+.help-note {
+  font-size: 0.9em;
+  color: #C0C0C0;
+  padding: 6px;
+  border-radius: 3px;
+}

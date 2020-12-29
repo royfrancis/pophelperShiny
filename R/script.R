@@ -12,6 +12,11 @@
 #' library(pophelperShiny)
 #' runPophelper()
 #' }
+#' @import ggplot2
+#' @import highcharter
+#' @import magrittr
+#' @import pophelper
+#' @importFrom shiny actionButton br checkboxInput column conditionalPanel div downloadButton downloadHandler eventReactive fileInput fluidRow fluidPage h1 h2 h3 h4 h5 h6 helpText hr HTML htmlOutput imageOutput incProgress inputPanel isolate mainPanel numericInput observe observeEvent Progress reactive reactiveValues renderImage renderPlot renderPrint renderTable renderText renderUI req runApp selectInput selectizeInput setProgress sidebarLayout sidebarPanel sliderInput submitButton tabPanel tabsetPanel tags tagList textInput titlePanel uiOutput updateActionButton updateCheckboxInput updateNumericInput updateSelectInput updateSelectizeInput updateSliderInput updateTextInput validate verbatimTextOutput wellPanel withProgress
 #' @importFrom colourpicker colourInput updateColourInput
 #' @importFrom DT renderDataTable dataTableOutput
 #' @importFrom gridExtra grid.arrange
@@ -34,3 +39,4 @@ runPophelper <- function(display.mode="normal",launch.browser=TRUE,...) {
   
   shiny::runApp(appDir,display.mode=display.mode,launch.browser=launch.browser,...)
 }
+

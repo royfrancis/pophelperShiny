@@ -2,37 +2,39 @@
 # FUNCTIONS.R
 # Roy Mathew Francis
 
-# library("shiny")
-# library("ggplot2")
-# library("markdown")
-# library("tidyr")
-# library("gridExtra")
-# library("gtable")
-# library("RColorBrewer")
-# library("DT")
-# library("shinyAce")
-# library("colourpicker")
-# library("viridisLite")
-# library("shinyBS")
-# library("highcharter")
-# library("dplyr")
-# library("writexl")
-# library("shinythemes")
-# library("shinyWidgets")
-# library("pophelper")
+library(shiny)
+library(ggplot2)
+library(highcharter)
+library(magrittr)
+library(pophelper)
 
+library(colourpicker)
+library(DT)
+library(gridExtra)
+library(htmlwidgets)
+library(RColorBrewer)
+library(shinyAce)
+library(shinyBS)
+library(shinythemes)
+library(shinyWidgets)
+library(tidyr)
+library(viridisLite)
+library(writexl)
+
+print(sessionInfo())
+message("Sourcing functions.R.")
 options(shiny.deprecation.messages=TRUE)
 
 #pophelper version
 fn_pophelper <- function()
 {
-  return("pophelperShiny_v2.1.0") 
+  return("pophelperShiny_v2.1.1") 
 }
 
-#pophelper version
+# pophelper version
 fn_update <- function()
 {
-  return("15-Aug-2019") 
+  return("28-Dec-2020") 
 }
 
 # is.local
@@ -43,14 +45,14 @@ fn_dir <- function(currwd=NULL)
 {
   if(is.null(currwd)) currwd <- tempdir()
   
-  #Create working directory
+  # create working directory
   newwd <- paste0(currwd,"/",paste0(format(Sys.time(),"%Y%m%d%H%M%S"),sample(1:1000,1)))
   dir.create(newwd)
   
   return(newwd)
 }
 
-#validation
+# validation
 fn_validate <- function(input,message1,message2,message3) 
 {
   
@@ -90,16 +92,16 @@ fn_validate <- function(input,message1,message2,message3)
   }
 }
 
-# Validate equality between two input values
-# Prints message if input1 is not equal to input2
+# validate equality between two input values
+# prints message if input1 is not equal to input2
 #
 fn_validate_equal <- function(input1,input2,message)
 {
   if(all(input1 != input2)) print(message)
 }
 
-# Validate colour return
-# Checks if input is a high_k (low number of colours)
+# validate colour return
+# checks if input is a high_k (low number of colours)
 #
 fn_validate_colours <- function(input1,message)
 {
@@ -108,7 +110,7 @@ fn_validate_colours <- function(input1,message)
   }
 }
 
-#validate structure for evanno
+# validate structure for evanno
 fn_validate_evanno <- function(input1)
 {
   un <- unique(pophelper:::checkQ(input1$datapath)$type)
@@ -116,13 +118,13 @@ fn_validate_evanno <- function(input1)
   if(length(un)==1 && un!="STRUCTURE") return("One or more input files are not in STRUCTURE format.")
 }
 
-#Validateevannocalc
+# validateevannocalc
 fn_validate_evannocalc <- function(input1)
 {
   if(is.null(input1)) return(FALSE)
 }
 
-#Validate grplab
+# validate grplab
 fn_validate_grplab <- function(grplab)
 {
   if(!is.list(grplab)) print("Group labels are not list datatype.")
@@ -140,8 +142,8 @@ fn_validate_sharedindlab <- function(sharedindlab,sortind)
   if(sortind!="label" && sharedindlab) print("'Common individual labels' must be FALSE (unchecked), when individuals are ordered by 'all' or a cluster.")
 }
 
-# Validate subset group
-# Checks if subset group is contiguous and if ordergrp is checked
+# validate subset group
+# checks if subset group is contiguous and if ordergrp is checked
 #' @param input1 selgrp title character
 #' @param input2 grplab data.frame
 #' @param input3 ordergrp
@@ -152,7 +154,7 @@ fn_validate_subsetgrp <- function(input1,input2,input3)
   if(any(duplicated(rlegrp$values)) && (!input3)) print("Selected active group label set contains non-contiguous labels. Check 'Order group labels' to reorder all group label sets alphabetically.")
 }
 
-#colourPalettes
+# colourPalettes
 colourPalettes <- function()
 {
   return(list("Function Based"=c("Inferno","Magma","Plasma","Viridis","Rich","Tim","Muted","Teal","Funky","Merry","Rainbow"), 
@@ -160,8 +162,8 @@ colourPalettes <- function()
               "Pre Defined ColorBrewer"=c("Set1","Pastel1","BuGn","BuPu","GnBu","OrRd","PuBu","PuRd","RdPu","YlGn","PuBuGn","YlGnBu","YlOrBr","YlOrRd","Blues","Greens","Oranges","Purples","Reds","Greys","Set2","Accent","Pastel2","Dark2","Spectral","RdYlGn","RdYlBu","RdGy","RdBu","PuOr","PRGn","PiYG","BrBG","Set3","Paired")))
 }
 
-#getColoursWa
-#palette options: Strong, Standard, Ocean, Keeled, Vintage, Retro, Wong, Krzywinski and more ...
+# getColoursWa
+# palette options: Strong, Standard, Ocean, Keeled, Vintage, Retro, Wong, Krzywinski and more ...
 getColoursWa <- function(k=NA,palette)
 {
   # if k is not NA, check if k is numeric
@@ -449,48 +451,48 @@ divgrey <- function(...)
 
 evannoMethodStructureCalculationWa <- function(data=NULL)
 {
-  #does df data contain any data
+  # does df data contain any data
   if (length(data) == 0) stop("No input data.")
   if (is.null(data)) stop("No input data.")
-  #make sure dataframe
+  # make sure dataframe
   data <- as.data.frame(data)
-  #convert column names to lowercase
+  # convert column names to lowercase
   colnames(data) <- tolower(colnames(data))
   cold <- colnames(data)
   
-  #is column loci available
+  # is column loci available
   if (!"loci" %in% cold) stop("Column loci not available.")
-  #is column ind available
+  # is column ind available
   if (!"ind" %in% cold) stop("Column ind not available.")
-  #is column k available
+  # is column k available
   if (!"k" %in% cold) stop("Column k not available.")
-  #is column runs available
+  # is column runs available
   if (!"runs" %in% cold) stop("Column runs not available.")
-  #is column elpdmean available
+  # is column elpdmean available
   if (!"elpdmean" %in% cold) stop("Column elpdmean not available.")
-  #is column elpdsd available
+  # is column elpdsd available
   if (!"elpdsd" %in% cold) stop("Column elpdsd not available.")
-  #is column minelpd available
+  # is column minelpd available
   if (!"elpdmin" %in% cold) stop("Column elpdmin not available.")
-  #is column maxelpd available
+  # is column maxelpd available
   if (!"elpdmax" %in% cold) stop("Column elpdmax not available.")
   
-  #atleast 3 values of K
+  # atleast 3 values of K
   if (length(data$k) < 3) stop("Evanno method not computed. Requires at least 3 values of K.")
-  #do loci vary
+  # do loci vary
   if (all(data$loci[1] == data$loci) != TRUE) stop("Evanno method not computed. Number of loci vary between runs.")
-  #do ind vary
+  # do ind vary
   if (all(data$ind[1] == data$ind) != TRUE) stop("The Evanno method not computed. Number of individuals vary between runs.")
-  #are k values sequential
+  # are k values sequential
   is.sequential <- function(x) all(abs(diff(x)) == 1)
   if (!is.sequential(data$k)) stop("Evanno method not computed. Requires increasing sequential values of K.")
-  #repeats of k<2
+  # repeats of k<2
   if (any(data$runs < 2)) stop("Evanno method not computed. Repeats (runs) for some value of K is less than 2.")
   
-  #convert dataframe to list
+  # convert dataframe to list
   datal <- as.list(data)
   
-  #Loop to get first derivative of l(K) and its sd
+  # loop to get first derivative of l(K) and its sd
   drv1 <- vector(length = nrow(data)-1, mode = "numeric")
   drv1sd <- vector(length = nrow(data)-1, mode = "numeric")
   i <- 1
@@ -502,7 +504,7 @@ evannoMethodStructureCalculationWa <- function(data=NULL)
     i = i+1
   }
   
-  #Loop to get second derivative of l(K) and its sd
+  # loop to get second derivative of l(K) and its sd
   drv2 <- vector(length = nrow(data)-2, mode = "numeric")
   drv2sd <- vector(length = nrow(data)-2, mode = "numeric")
   i <- 1
@@ -514,7 +516,7 @@ evannoMethodStructureCalculationWa <- function(data=NULL)
     i = i+1
   }
   
-  #add NA to SD vector 1 and 2
+  # add NA to SD vector 1 and 2
   drv1sdf <- c(NA, drv1sd)
   drv2sdf <- c(NA, drv2sd, NA)
   
@@ -534,7 +536,7 @@ evannoMethodStructureCalculationWa <- function(data=NULL)
   rm(datal)
   colnames(data)[9:15] <- c("lnk1","lnk1max","lnk1min","lnk2","lnk2max","lnk2min","deltaK")
   
-  #return table
+  # return table
   return(data)
 }
 
@@ -545,23 +547,21 @@ evannoMethodStructurePlotWa <- function(data=NULL,textcol="grey30",
                                         linesize=0.2,linecol="steelblue",linetype=1,
                                         ebcol="grey30",ebwidth=0.15,basesize=5)
 {
-  #does df data contain any data
+  # does df data contain any data
   if (length(data) == 0) stop("No input data.")
   if (is.null(data)) stop("No input data.")
-  #make sure dataframe
+  # make sure dataframe
   data <- as.data.frame(data)
   cold <- colnames(data)
   
   #if(!all(c("lnk1","lnk1max","lnk1min","lnk2","lnk2max","lnk2min","deltaK") %in% cold)) stop("evannoMethodStructurePlotWa: Missing columns.")
   
-  #linesize <- base_size*0.04
-  #pointsize <- base_size*0.3
   gridsize <- basesize*0.03
   
-  #create plots list
+  # create plots list
   plist <- vector("list")
   
-  #plot1
+  # plot1
   plist[[1]] <- ggplot2::ggplot(data, aes(x=k, y=elpdmean))+
     geom_path(colour=linecol, size=linesize, linetype=linetype, na.rm=TRUE)+
     geom_point(colour=pointcol,fill=pointcol, size=pointsize, shape=pointtype, na.rm=TRUE)+
@@ -569,7 +569,7 @@ evannoMethodStructurePlotWa <- function(data=NULL,textcol="grey30",
     labs(x=expression(paste(italic(K))), y=expression(paste("Mean L(", italic(K), ") " %+-% " SD")),title="A")+
     theme_bw(base_size = basesize)
   
-  #plot 2
+  # plot 2
   plist[[2]] <- ggplot2::ggplot(data, aes(x=k, y=lnk1))+
     geom_path(colour=linecol, size=linesize, linetype=linetype, na.rm=TRUE)+
     geom_point(colour=pointcol, fill=pointcol, size=pointsize, shape=pointtype, na.rm=TRUE)+
@@ -577,7 +577,7 @@ evannoMethodStructurePlotWa <- function(data=NULL,textcol="grey30",
     labs(x=expression(paste(italic(K))), y=expression(paste("L'(", italic(K), ") " %+-% " SD")), title="B")+
     theme_bw(base_size = basesize)
   
-  #plot 3
+  # plot 3
   plist[[3]] <- ggplot2::ggplot(data, aes(x=k, y=lnk2))+
     geom_path(colour=linecol, size=linesize, linetype=linetype, na.rm=TRUE)+
     geom_point(colour=pointcol, fill=pointcol, size=pointsize, shape=pointtype, na.rm=TRUE)+
@@ -585,7 +585,7 @@ evannoMethodStructurePlotWa <- function(data=NULL,textcol="grey30",
     labs(x=expression(paste(italic(K))), y=expression(paste("|L\"(", italic(K), ")| " %+-% " SD")), title="C")+
     theme_bw(base_size = basesize)
   
-  #plot 4
+  # plot 4
   if(is.finite(sum(data$drv3, na.rm=TRUE)))
   {
     plist[[4]] <- ggplot2::ggplot(data, aes(x=k, y=deltaK))+
@@ -700,7 +700,8 @@ intPlotQ <- function(dfr,sortind=NA,grplab=NA,selgrp=NA,ordergrp=F,subsetgrp=NA,
                         corder,"<br><b>ID:</b> ",dfr$ind)
   }
   
-  df2 <- dfr %>% tidyr::gather(key="group",value="y",-x,-popup,-ind)
+  #df2 <- dfr %>% tidyr::gather(key="group",value="y",-x,-popup,-ind)
+  df2 <- dfr %>% pivot_longer(cols=colnames(dfr)[!colnames(dfr) %in% c("x","popup","ind")],names_to="group",values_to="y")
   df2$popup <- paste0(df2$popup,paste0("<br><b>Cluster:</b> ",df2$group,"<br><b>Value:</b> ",df2$y))
   
   return(list(df=df2,ind=dfr$ind))
@@ -1200,235 +1201,6 @@ readQBapsWa <- function(files=NULL,filenames=NULL)
   names(dlist) <- fnames
   
   return(dlist)
-}
-
-# clumppExportWa -----------------------------------------------------------------
-
-#' @title Generate CLUMPP output from a qlist
-#' @description Takes a qlist and combines several repeats for each K into a 
-#' single file along with a parameter file suitable for input to CLUMPP. The two 
-#' output files are organised into folders by K. CLUMPP is executed automatically 
-#' when \code{useexe=T}, else the CLUMPP executable file can be copied to the 
-#' output directories and run to reorder the clusters for each K.
-#' @param qlist A qlist (list of dataframes). An output from \code{\link{readQ}}.
-#' @param prefix A character prefix for folder names. By default, set to 'pop'.
-#' @param parammode A numeric 1, 2 or 3 indicating the algorithm option for CLUMPP paramfile. Calculated 
-#' automatically by default. Set this value to 3 if CLUMPP runs too long. See details.
-#' @param paramrep A numeric indicating the number of repeats for CLUMPP paramfile. Calculated 
-#' automatically by default. See details.
-#' @param useexe A logical indicating if CLUMPP executable must be run automatically based on system OS (experimental). May not work on all OS and versions.
-#' @param exd Path to executables directory
-#' @param currwd Path to working directory where clumpp files are to be exported.
-#' @return The combined file and paramfile are written into respective folders 
-#' named by K.
-#' 
-clumppExportWa <- function(qlist=NULL,prefix=NA,parammode=NA,paramrep=NA,useexe=FALSE,exd=NA,currwd=NA)
-{
-  # check input
-  is.qlist(qlist)
-  
-  if(is.na(prefix)) prefix <- "clumpp"
-  prefix <- paste0(prefix,"_k")
-  if(!is.logical(useexe)) stop("clumppExport: Argument 'useexe' set incorrectly. Set as TRUE or FALSE.")
-  
-  # get tabulated runs
-  df1 <- tabulateQ(qlist)
-  df2 <- summariseQ(df1)
-  df1l <- as.list(df1)
-  df2l <- as.list(df2)
-  
-  if(is.null(names(qlist))) names(qlist) <- paste0("sample",1:length(qlist))
-  
-  # k val duplicated
-  if(any(duplicated(df2l$k))) stop("clumppExport: Repeating values of K found.")
-  # do ind vary?
-  if(!all(df2l$ind[1]==df2l$ind)) warning("clumppExport: Number of individuals vary between runs.")
-  
-  e <- 1
-  p <- 1
-  len1 <- length(df2l$k)
-  while (e <= len1)
-  {
-    k <- df2l$k[e]
-    ind <- df2l$ind[e]
-    runs <- df2l$runs[e]
-    
-    ldata <- vector("list",length=runs)
-    for (f in 1:runs)
-    {
-      sel <- which(names(qlist)==as.character(df1l$file[p]))
-      dframe1 <- qlist[[sel]]
-      
-      # generate df
-      dframe3 <- as.matrix(data.frame(V1=paste0(1:ind,":"),dframe1,last=as.character(rep(1,ind)),stringsAsFactors=FALSE))
-      
-      # add dataframes to list
-      ldata[[f]] <- dframe3
-      rm(dframe3)
-      p=p+1
-    }
-    
-    if(runs > 1 && k > 1)
-    {
-      if(is.na(currwd)) currwd <- getwd()
-      if(as.numeric(file.access(currwd,2))==-1) stop(paste0("clumppExport: Directory ",currwd," has no write permission."))
-      
-      if(!dir.exists(paste0(currwd,"/clumpp"))) dir.create(paste0(currwd,"/clumpp"))
-      setwd(paste0(currwd,"/clumpp"))
-      cat(paste0("Folder created: ",basename(getwd()),"\n"))  
-      out <- paste0(prefix,k,".txt")
-      
-      ## file output block
-      
-      # make 2 line space
-      spacer <- matrix(rep("  ",(k+2)*2),nrow=2)
-      
-      # write file
-      write(t(format(ldata[[1]],nsmall=15)),paste(out),ncolumns=k+2)
-      for (i in 2:length(ldata))
-      {
-        write(t(spacer),paste(out),ncolumns=k+2,append=TRUE)
-        write(t(format(ldata[[i]],nsmall=15)),append=TRUE,paste(out),ncolumns=k+2)
-      }
-      cat(paste0(out),"exported.\n")
-      
-      ## paramfile section
-      T1 <- factorial(k)*((length(ldata)*(length(ldata)-1))/2)*k*ind
-      if(T1 <= 100000000)
-      {
-        if(is.na(parammode)) parammode <- 2
-        if(is.na(paramrep)) paramrep <- 20
-      }else{
-        if(is.na(parammode)) parammode <- 3
-        if(is.na(paramrep)) paramrep <- 500
-      }
-      out1 <- base::gsub(".txt","",out)
-      params <- c("DATATYPE 1 ",
-                  "INDFILE NOTNEEDED.indfile ",
-                  paste0("POPFILE ",out," "),
-                  paste0("OUTFILE ",out1,"-merged.txt "),
-                  paste0("MISCFILE ",out1,"-miscfile.txt "),
-                  paste0("K ",k," "),
-                  paste0("C ",ind," "),
-                  paste0("R ",length(ldata)," "),
-                  paste0("M ",parammode," "),
-                  "W 0 ",
-                  "S 2 ",
-                  "GREEDY_OPTION 2 ",
-                  paste0("REPEATS ",paramrep," "),
-                  "PERMUTATIONFILE NOTNEEDED.permutationfile ",
-                  "PRINT_PERMUTED_DATA 1 ",
-                  paste0("PERMUTED_DATAFILE ",out1,"-aligned.txt "),
-                  "PRINT_EVERY_PERM 0 ",
-                  paste0("EVERY_PERMFILE ",out1,".every_permfile "),
-                  "PRINT_RANDOM_INPUTORDER 0 ",
-                  paste0("RANDOM_INPUTORDERFILE ",out1,".random_inputorderfile "),
-                  "OVERRIDE_WARNINGS 0 ",
-                  "ORDER_BY_RUN 0 ")
-      
-      write(params,"paramfile")
-      cat(paste0("paramfile exported.\n"))
-      
-      # autorun clumpp executable
-      if(useexe)
-      {
-        
-        if(tolower(Sys.info()[['sysname']])=="windows")
-        {
-          file.copy(paste0(exd,"/clumpp_windows_1.1.2b.exe"),".")
-          tryCatch(system("clumpp_windows_1.1.2b.exe"),error=function(c) paste0("CLUMPP execution failed."))
-          unlink("clumpp_windows_1.1.2b.exe",force=TRUE)
-        }
-        
-        if(tolower(Sys.info()[['sysname']])=="darwin")
-        {
-          file.copy(paste0(exd,"/clumpp_mac_1.1.2b"),".")
-          system("chmod 777 clumpp_mac_1.1.2b")
-          tryCatch(system("./clumpp_mac_1.1.2b"),error=function(c) paste0("CLUMPP execution failed."))
-          unlink("clumpp_mac_1.1.2b",force=TRUE)
-        }
-        
-        if((tolower(Sys.info()[['sysname']])=="linux") && (tolower(Sys.info()[['machine']])=="x86_32"))
-        {
-          file.copy(paste0(exd,"/clumpp_linux_1.1.2b_32bit"),".")
-          system("chmod 777 clumpp_linux_1.1.2b_32bit")
-          tryCatch(system("./clumpp_linux_1.1.2b_32bit"),error=function(c) paste0("CLUMPP execution failed."))
-          unlink("clumpp_linux_1.1.2b_32bit",force=TRUE)
-        }
-        
-        if((tolower(Sys.info()[['sysname']])=="linux") && (tolower(Sys.info()[['machine']])=="x86_64"))
-        {
-          file.copy(paste0(exd,"/clumpp_linux_1.1.2b_64bit"),".")
-          system("chmod 777 clumpp_linux_1.1.2b_64bit")
-          tryCatch(system("./clumpp_linux_1.1.2b_64bit"),error = function(c) paste0("CLUMPP execution failed."))
-          unlink("clumpp_linux_1.1.2b_64bit",force=TRUE)
-        }
-        
-      }
-      
-      setwd(paste(currwd))
-      cat("-----------------------\n")
-    }else
-    {
-      if(k==1) message(paste0(prefix,k," not exported. K less than 2.\n"))
-      if(runs < 2) message(paste0(prefix,k," not exported. Repeats less than 2.\n"))
-      cat("-----------------------\n")
-    }
-    e <- e + 1
-  }
-  
-  cat("Run completed.\n")
-}
-
-# summariseQ -------------------------------------------------------------------
-## custom summariseQ() that can accept one run
-
-#' @title Summarise a tabulated dataframe
-#' @description Creates a summary table from a tabulated dataframe of two or 
-#' more runs with k, number of runs and individuals.
-#' @param data A dataframe with tabulated runs. An output from \code{tabulateQ()}. 
-#' Must have minimum 2 columns named k and ind.
-#' @param writetable A logical indicating if the output table is to be exported 
-#' as a tab-delimited text file in the working directory.
-#' @return Returns a dataframe with all values of K sorted by K. The table has 
-#' 3 columns namely value of K, number of runs for each K and number of 
-#' individuals.
-#' If the input file is derived from STRUCTURE runs, the table is sorted by loci 
-#' as well. Other columns include elpdmean, elpdsd, elpdmin and elpdmax.
-#' 
-summariseQ <- summarizeQ <- function(data=NULL,writetable=FALSE)
-{
-  # does df data contain any data?
-  if(is.null(data) || length(data)==0) stop("summariseQ: No input files.")
-  if(!is.logical(writetable)) stop("summariseQ: Argument 'writetable' not set correctly. Set as TRUE or FALSE.")
-  
-  # make sure dataframe
-  if(class(data) != "data.frame") stop("summariseQ: Input is not a dataframe.")
-  # convert column names to lowercase
-  colnames(data) <- tolower(colnames(data))
-  # is column k available?
-  if(length(grep("k",colnames(data)))==0) stop("summariseQ: Column k not available.")
-  # is column ind available?
-  if(length(grep("ind",colnames(data)))==0) stop("summariseQ: Column ind not available.")
-  
-  # check
-  #if(nrow(data) < 2) stop("summariseQ: At least 2 runs are required for this function.")
-  
-  if(all(c("k","ind","loci","elpd") %in% colnames(data)))
-  {
-    dframe1 <- stats::aggregate(elpd ~ loci + ind + k,data=data,length)
-    colnames(dframe1)[4] <- "runs"
-    dframe2 <- aggregate(elpd ~ loci + ind + k,data=data,FUN=function(x) c(elpdmean =mean(x,na.rm=TRUE),elpdsd=sd(x,na.rm=TRUE),elpdmin=min(x,na.rm=TRUE),elpdmax=max(x,na.rm=TRUE)))[,-c(1:3)]
-    dframe1 <- cbind(dframe1,dframe2)
-  }else{
-    dframe1 <- stats::aggregate(file ~ ind + k,data=data[,c("file","k","ind")],length)
-    colnames(dframe1)[3] <- "runs"
-  }
-  
-  # write table if opted
-  if(writetable) write.table(dframe1,"summariseQ.txt",quote=FALSE,row.names=FALSE,sep="\t",dec=".")
-  
-  return(dframe1)
 }
 
 # create dataframe for colour palette

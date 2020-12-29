@@ -2,6 +2,7 @@
 # SERVER.R
 # Roy Mathew Francis
 
+source("functions.R",local=TRUE)
 options(shiny.maxRequestSize=(50*1024^2))
 rootwd <- getwd()
 
@@ -357,16 +358,10 @@ shinyServer(function(input,output,session) {
                               fluidRow(
                                 column(3,
                                        div(id="div_evannoinput",class="row",
-                                           div(class="col-xs-2",style=list("padding-right:5px;margin-top:10.5px;margin-bottom:10.5px"),
-                                               icon("info-circle",class="fa-lg")),
-                                           div(class="col-xs-10",style=list("padding-left:5px;"),
-                                               h4(" Input files")
-                                           )),
+                                           HTML('<span><h4><i class="fas fa-info-circle"></i>&nbsp;Input files</h4><span>')
+                                           ),
                                        shinyBS::bsTooltip("div_evannoinput",title="Select runs (rows) below by clicking to include in the Evanno analysis. If no rows are selected,all rows are included by default. To see the results, go to the Output tab.",placement="top",trigger="hover")
                                 )
-                                #column(11,style="padding-left:0px",
-                                #h4("Input files")
-                                #)
                               ),
                               DT::dataTableOutput("table_evanno_input")
                             )),
@@ -389,7 +384,7 @@ shinyServer(function(input,output,session) {
                             tags$br(),
                             tags$hr(),
                             fluidRow(
-                              column(4,
+                              column(4,style="min-width:300px;max-width:350px;",
                                      uiOutput("ui_evannoplotoptions"),
                                      uiOutput("ui_evannodownloadoptions")
                               ),
@@ -516,7 +511,7 @@ shinyServer(function(input,output,session) {
           wellPanel(
             div(class="row",
                 div(class="col-xs-6",style=list("padding-right: 5px;"),
-                    colourpicker::colourInput("in_eptextcol",label="Text/Error-bar colour",value="#505050"),
+                    colourpicker::colourInput("in_eptextcol",label="Text/Bar colour",value="#505050"),
                     shinyBS::bsTooltip("in_eptextcol",title="Colour of text elements and error bars.",placement="bottom",trigger="hover")
                 ),
                 div(class="col-xs-6",style=list("padding-left: 5px;"),
@@ -1246,17 +1241,6 @@ shinyServer(function(input,output,session) {
                 wellPanel(id="div_stdplotoptions",style="overflow-y:scroll; max-height: 400px",
                           divopenh4("div_generalstdoptions","> General options",
                                     divgrey(
-                                      div(class="row",
-                                          div(class="col-xs-6",style=list("padding-right: 5px;"),
-                                              numericInput("in_barsize","Bar size",min=0,max=1,step=0.02,value=1),
-                                              shinyBS::bsTooltip("in_barsize",title="Size of bars on the barplot. Eg 0-1.0.",placement="bottom",trigger="hover")
-                                          ),
-                                          div(class="col-xs-6",style=list("padding-left: 5px;"),
-                                              numericInput("in_barbordersize","Bar border size",min=0,max=5,step=0.1,value=0),
-                                              shinyBS::bsTooltip("in_barbordersize",title="Size of bar border. Eg 0-5.0.",placement="bottom",trigger="hover")
-                                          )
-                                      ),
-                                      colourpicker::colourInput("in_barbordercolour",label="Bar border colour",value="#FFFFFF"),
                                       shinyBS::bsTooltip("in_barbordercolour",title="Colour of bar border.",placement="bottom",trigger="hover"),
                                       checkboxInput("in_showyaxis","Show Y axis",value=FALSE),
                                       uiOutput("ui_yaxisoptions"),
@@ -1283,9 +1267,6 @@ shinyServer(function(input,output,session) {
   # observer to reset standard plot options
   
   observeEvent(input$btn_reset_stdoptions,{
-    updateNumericInput(session,"in_barsize","Bar size",min=0,max=5,step=0.1,value=1)
-    updateNumericInput(session,"in_barbordersize","Bar border size",min=0,max=5,step=0.1,value=0)
-    colourpicker::updateColourInput(session,"in_barbordercolour",label="Bar border colour",value="#FFFFFF")
     updateCheckboxInput(session,"in_showyaxis","Show Y axis",value=FALSE)
     updateNumericInput(session,"in_ticksize","Tick size",min=0,max=1,step=0.02,value=0.1)
     updateNumericInput(session,"in_ticklength","Tick length",min=0,max=1,step=0.01,value=0.03)
@@ -1420,7 +1401,7 @@ shinyServer(function(input,output,session) {
                           shinyBS::bsTooltip("in_titlelabvjust",title="Title vertical justification. Value between 0-1.",placement="bottom",trigger="hover")
                       ),
                       div(class="col-xs-4",style=list("padding-left: 5px; width: 33%"),
-                          colourpicker::colourInput("in_titlelabcol",label="Text colour",value="#505050"),
+                          colourpicker::colourInput("in_titlelabcol",label="Txt colour",value="#505050"),
                           shinyBS::bsTooltip("in_titlelabcol",title="Title text colour.",placement="top",trigger="hover")
                       )
                   ),
@@ -1440,7 +1421,7 @@ shinyServer(function(input,output,session) {
     updateNumericInput(session,"in_titlelabspacer","Spacer",min=0.4,max=2.4,step=0.2,value=1.4)
     updateNumericInput(session,"in_titlelabhjust","H Justify",min=0,max=1,step=0.2,value=0)
     updateNumericInput(session,"in_titlelabvjust","V Justify",min=0,max=1,step=0.2,value=0.5)
-    colourpicker::updateColourInput(session,"in_titlelabcol",label="Text colour",value="#505050")
+    colourpicker::updateColourInput(session,"in_titlelabcol",label="Txt colour",value="#505050")
   })
   
   # UI: ui_subtitleoptions -----------------------------------------------------
@@ -1476,7 +1457,7 @@ shinyServer(function(input,output,session) {
                           shinyBS::bsTooltip("in_subtitlelabvjust",title="Subtitle vertical justification. Value between 0-1.",placement="bottom",trigger="hover")
                       ),
                       div(class="col-xs-4",style=list("padding-left: 5px; width: 33%"),
-                          colourpicker::colourInput("in_subtitlelabcol",label="Text colour",value="#505050"),
+                          colourpicker::colourInput("in_subtitlelabcol",label="Txt colour",value="#505050"),
                           shinyBS::bsTooltip("in_subtitlelabcol",title="Subtitle text colour.",placement="top",trigger="hover")
                       )
                   ),
@@ -1496,7 +1477,7 @@ shinyServer(function(input,output,session) {
     updateNumericInput(session,"in_subtitlelabspacer","Spacer",min=0.4,max=2.4,step=0.2,value=1.4)
     updateNumericInput(session,"in_subtitlelabhjust","Hor position",min=0,max=1,step=0.2,value=0)
     updateNumericInput(session,"in_subtitlelabvjust","Ver position",min=0,max=1,step=0.2,value=0.5)
-    colourpicker::updateColourInput(session,"in_subtitlelabcol",label="Text colour",value="#505050")
+    colourpicker::updateColourInput(session,"in_subtitlelabcol",label="Txt colour",value="#505050")
   })
   
   # UI: ui_clusterlegendoptions ------------------------------------------------
@@ -1580,7 +1561,7 @@ shinyServer(function(input,output,session) {
                                             uiOutput("ui_panelratio")
                                         ),
                                         div(class="col-xs-6",style=list("padding-left: 5px;"),
-                                            colourpicker::colourInput("in_grpmarkercol",label="Label marker colour",value="#505050"),
+                                            colourpicker::colourInput("in_grpmarkercol",label="Lab mark colour",value="#505050"),
                                             shinyBS::bsTooltip("in_grpmarkercol",title="Colour of the label points & label line.",placement="top",trigger="hover")
                                         )
                                     )
@@ -1682,7 +1663,7 @@ shinyServer(function(input,output,session) {
   observeEvent(input$btn_reset_grplabstdoptions,{
     updateNumericInput(session,"in_glh","Group label panel height",min=0,max=2,value=0.5,step=0.1)
     updateNumericInput(session,"in_ls","Label spacer",min=0,max=0.7,value=0,step=0.1)
-    colourpicker::updateColourInput(session,"in_grplabcol",label="Label marker colour",value="#505050")
+    colourpicker::updateColourInput(session,"in_grplabcol",label="Lab mark colour",value="#505050")
     updateNumericInput(session,"in_grplabpos","Text position",min=0,max=1,value=0.2,step=0.1)
     colourpicker::updateColourInput(session,"grplabtextcol",label="Text colour",value="#505050")
     updateNumericInput(session,"in_grplabsize","Size",min=1,max=5,value=NA,step=0.1)
@@ -1805,11 +1786,11 @@ shinyServer(function(input,output,session) {
         div(class="row",
             div(class="col-xs-6",style=list("padding-right: 5px;"),
                 numericInput("in_height","Height (cm)",min=0.1,max=10.0,step=0.1,value=NA),
-                shinyBS::bsTooltip("in_height",title="Height of one run panel in the figure. Eg. 0.1-10.0.",placement="top",trigger="hover")
+                shinyBS::bsTooltip("in_height",title="Height of one run panel in the figure. Eg. 0.1-10.0. (Optional)",placement="top",trigger="hover")
             ),
             div(class="col-xs-6",style=list("padding-left: 5px;"),
                 numericInput("in_width","Width (cm)",min=1,max=50,step=1,value=NA),
-                shinyBS::bsTooltip("in_width",title="Width of the figure. Eg. 1-50.",placement="right",trigger="hover")
+                shinyBS::bsTooltip("in_width",title="Width of the figure. Eg. 1-50. (Optional)",placement="right",trigger="hover")
             )
         ),
         div(class="row",
@@ -2498,12 +2479,6 @@ shinyServer(function(input,output,session) {
     progress$inc(0.9,message="Computing std plot parameters...")
     
     # bar and y axis
-    #validate(fn_validate(try(input$in_barsize),message1="Argument 'in_barsize' missing."))
-    if(is.null(input$in_barsize)){sl_barsize <- 1}else{sl_barsize <- input$in_barsize}
-    #validate(fn_validate(try(input$in_barbordersize),message1="Argument 'in_barbordersize' missing."))
-    if(is.null(input$in_barbordersize)){sl_barbordersize <- 0}else{sl_barbordersize <- input$in_barbordersize}
-    #validate(fn_validate(try(input$in_barbordercolour),message1="Argument 'in_barbordercolour' missing."))
-    if(is.null(input$in_barbordercolour)){sl_barbordercolour <- "black"}else{sl_barbordercolour <- input$in_barbordercolour}
     #validate(fn_validate(try(input$in_showyaxis),message1="Argument 'in_showyaxis' missing."))
     if(is.null(input$in_showyaxis)){sl_showyaxis <- FALSE}else{sl_showyaxis <- input$in_showyaxis}
     if(sl_showyaxis){
@@ -2580,9 +2555,6 @@ shinyServer(function(input,output,session) {
       legendtextsize=sl_legendtextsize,
       legendspacing=sl_legendspacing,
       legendrow=sl_legendrow,
-      barsize=sl_barsize,
-      barbordersize=sl_barbordersize,
-      barbordercolour=sl_barbordercolour,
       showyaxis=sl_showyaxis,
       showticks=sl_showticks,
       ticksize=sl_ticksize,
@@ -2649,8 +2621,7 @@ shinyServer(function(input,output,session) {
           divsize=params$divsize,showlegend=params$showlegend,legendlab=params$legendlab,
           legendpos=params$legendpos,legendkeysize=params$legendkeysize,
           legendtextsize=params$legendtextsize,legendspacing=params$legendspacing,
-          legendrow=params$legendrow,barsize=params$barsize,
-          barbordersize=params$barbordersize,barbordercolour=params$barbordercolour,
+          legendrow=params$legendrow,
           showyaxis=params$showyaxis,showticks=params$showticks,ticksize=params$ticksize,
           ticklength=params$ticklength,panelratio=params$panelratio,
           imgtype="png",height=height,width=width,dpi=res)
@@ -2729,8 +2700,7 @@ shinyServer(function(input,output,session) {
           divsize=params$divsize,showlegend=params$showlegend,legendlab=params$legendlab,
           legendpos=params$legendpos,legendkeysize=params$legendkeysize,
           legendtextsize=params$legendtextsize,legendspacing=params$legendspacing,
-          legendrow=params$legendrow,barsize=params$barsize,
-          barbordersize=params$barbordersize,barbordercolour=params$barbordercolour,
+          legendrow=params$legendrow,
           showyaxis=params$showyaxis,showticks=params$showticks,ticksize=params$ticksize,
           ticklength=params$ticklength,panelratio=params$panelratio,
           imgtype=input$in_format,height=input$in_height,
@@ -2762,8 +2732,6 @@ shinyServer(function(input,output,session) {
         wellPanel(
           sliderInput("ip_height","Plot height (px)",min=100,max=1000,step=2,value=180),
           sliderInput("ip_width","Plot width (px)",min=200,max=1600,step=2,value=800),
-          sliderInput("ip_border","Bar border size",min=0,max=2,step=0.1,value=0),
-          sliderInput("ip_grpwidth","Bar gap",min=0,max=1,step=0.1,value=0),
           checkboxInput("ip_legend","Show legend",value=TRUE),
           checkboxInput("ip_credit","Show caption",value=TRUE),
           checkboxInput("ip_title","Show title",value=FALSE)
@@ -2786,16 +2754,20 @@ shinyServer(function(input,output,session) {
     
     df1 <- dfa$df
     df1$x <- as.factor(df1$x)
+    # order legend numerically
+    if(all(grepl("Cluster",df1$group))){
+      df1$group <- factor(df1$group,levels=paste0("Cluster",sort(as.integer(unique(gsub("Cluster","",df1$group))))))
+    }
     
     hc <- df1 %>%
       hchart(.,"column",hcaes(x="x",y="y",group="group")) %>%
-      hc_xAxis(title=list(text=NULL),allowDecimals=FALSE,categories=dfa$df$ind) %>%
+      hc_xAxis(title=list(text=NULL),allowDecimals=FALSE,categories=unique(df1$ind)) %>%
       hc_yAxis(title=list(text=NULL),max=1) %>%
       hc_colors(substr(coredata[["clustercol"]],1,7)) %>%
       hc_legend(enabled=coredata[["legend"]],align='right',verticalAlign='top',
                 layout='horizontal',floating=FALSE) %>%
       hc_plotOptions(column=list(animation=FALSE,stacking="normal",pointPadding=0,
-                                 groupPadding=coredata[["grpwidth"]],borderWidth=coredata[["border"]])) %>%
+                                 groupPadding=0,borderWidth=0)) %>%
       hc_chart(zoomType='x',panKey="shift",panning=TRUE) %>%
       hc_size(height=coredata[["height"]],width=coredata[["width"]]) %>%
       hc_credits(enabled=coredata[["credit"]],text=coredata[["name"]],href="") %>%
@@ -2823,10 +2795,6 @@ shinyServer(function(input,output,session) {
     if(is.null(input$ip_height)) {ip_height <- 180}else{ip_height <- input$ip_height}
     #validate(fn_validate(try(input$ip_width),message1="Argument 'ip_width' missing."))
     if(is.null(input$ip_width)) {ip_width <- 800}else{ip_width <- input$ip_width}
-    #validate(fn_validate(try(input$ip_border),message1="Argument 'ip_border' missing."))
-    if(is.null(input$ip_border)) {ip_border <- 0}else{ip_border <- input$ip_border}
-    #validate(fn_validate(try(input$ip_grpwidth),message1="Argument 'ip_grpwidth' missing."))
-    if(is.null(input$ip_grpwidth)) {ip_grpwidth <- 0}else{ip_grpwidth <- input$ip_grpwidth}
     #validate(fn_validate(try(input$ip_legend),message1="Argument 'ip_legend' missing."))
     if(is.null(input$ip_legend)) {ip_legend <- FALSE}else{ip_legend <- input$ip_legend}
     #validate(fn_validate(try(input$ip_credit),message1="Argument 'ip_credit' missing."))
@@ -2834,8 +2802,7 @@ shinyServer(function(input,output,session) {
     #validate(fn_validate(try(input$ip_title),message1="Argument 'ip_title' missing."))
     if(is.null(input$ip_title)) {ip_title <- FALSE}else{ip_title <- input$ip_title}
     
-    return(list(height=ip_height,width=ip_width,border=ip_border,
-                grpwidth=ip_grpwidth,legend=ip_legend,credit=ip_credit,
+    return(list(height=ip_height,width=ip_width,legend=ip_legend,credit=ip_credit,
                 title=ip_title))
   })
   
@@ -2878,8 +2845,6 @@ shinyServer(function(input,output,session) {
       
       tlist$height <- iparams$height
       tlist$width <- iparams$width
-      tlist$border <- iparams$border
-      tlist$grpwidth <- iparams$grpwidth
       tlist$legend <- iparams$legend
       tlist$credit <- iparams$credit
       tlist$title <- iparams$title

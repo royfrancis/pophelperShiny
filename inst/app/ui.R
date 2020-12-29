@@ -2,7 +2,7 @@
 # UI.R
 # Roy Mathew Francis
 
-source("functions.R")
+source("functions.R",local=TRUE)
 
 shinyUI(
   fluidPage(theme=shinythemes::shinytheme("flatly"),
@@ -13,8 +13,7 @@ shinyUI(
                                         HTML("<div><img src='bannerv2.png' class='img-responsive' alt='Pophelper | Population structure analyses'</div>")
                             ),
                             tags$head(
-                              tags$link(rel="shortcut icon", href="favicon.ico"),
-                              includeScript("google-analytics.js")
+                              tags$link(rel="shortcut icon", href="favicon.ico")
                             ),
                             fluidRow(style="margin-left: 0px; margin-right:0px",                 
                                      column(12,
@@ -22,16 +21,16 @@ shinyUI(
                                             tabsetPanel(id="tabset_main",
                                                         tabPanel("Upload",
                                                                  fluidRow(
-                                                                   column(3,
+                                                                   column(3,style="min-width:300px;max-width:350px;",
                                                                           tags$br(),
                                                                           wellPanel(
                                                                             h4('Data Upload'),
                                                                             selectInput("in_filetype","Input format",choices=c("Auto","Basic","Baps","Clumpp","Structure","Tess"),selectize=TRUE,multiple=FALSE,selected="Auto"),
                                                                             shinyBS::bsTooltip(id="in_filetype",title="Input file format. See Guide for format descriptions.",placement="top",trigger="hover"),
                                                                             fileInput("in_filesmain",label="Upload file(s)",multiple=T),
-                                                                            
-                                                                            helpText("Upload a zipped file (.zip) with one or more run files of a single filetype/format."),
-                                                                            helpText("Check out the 'Guide' tab for more detailed instructions and sample files to download.")
+                                                                            HTML('<div style="font-size:0.9em;color:#a6acaf;margin-bottom:15px;"><i class="fas fa-info-circle"></i> Upload a zipped file (.zip) with one or more run files of a single filetype/format.</div>'),
+                                                                            HTML("Check out the 
+<a href='https://royfrancis.github.io/pophelperShiny/' target='_blank'><b>Project Website</b></a> for news, user guide and instructions.")
                                                                           )
                                                                    ),
                                                                    column(8,
@@ -43,7 +42,7 @@ shinyUI(
                                                         ),
                                                         tabPanel("Data",
                                                                  fluidRow(
-                                                                   column(3,
+                                                                   column(3,style="min-width:300px;max-width:350px;",
                                                                           tags$br(),
                                                                           # download tab data
                                                                           uiOutput("ui_downloadtabulated"),
@@ -77,7 +76,7 @@ shinyUI(
                                                         ),
                                                         tabPanel("Plot",
                                                                  fluidRow(
-                                                                   column(3,
+                                                                   column(3,style="min-width:300px;max-width:350px;",
                                                                           verbatimTextOutput("out_display2"),
                                                                           uiOutput("ui_plotoptions"),
                                                                           uiOutput("ui_downloadplotoptions")
@@ -87,22 +86,17 @@ shinyUI(
                                                                           tabsetPanel(id="tabset_plot",
                                                                                       tabPanel("Standard Plot",
                                                                                                fluidRow(
-                                                                                                 column(4,
+                                                                                                 column(4,style="min-width:300px;max-width:350px;",
                                                                                                         uiOutput("ui_stdplotoptions")
                                                                                                  ),
                                                                                                  column(8,
                                                                                                         tags$br(),
                                                                                                         uiOutput("ui_plot_barplot")
                                                                                                  )
-                                                                                                 # column(4,
-                                                                                                 #        div(id="div_display_plot",style="overflow-y:scroll; max-height: 800px",
-                                                                                                 #            verbatimTextOutput("out_display_plot")
-                                                                                                 #        )
-                                                                                                 #        )
                                                                                                )),
                                                                                       tabPanel("Interactive Plot",
                                                                                                fluidRow(
-                                                                                                 column(4,
+                                                                                                 column(4,style="min-width:300px;max-width:350px;",
                                                                                                         uiOutput("ui_intplotoptions")
                                                                                                  ),
                                                                                                  column(8,
@@ -124,21 +118,7 @@ shinyUI(
                                                                           )
                                                                    )
                                                                  )
-                                                        ),
-                                                        tabPanel("Guide",
-                                                                 fluidRow(
-                                                                   column(7,
-                                                                          includeMarkdown("guide.md")
-                                                                   )
-                                                                 )
-                                                        ),
-                                                        tabPanel("Versions",
-                                                                 fluidRow(
-                                                                   column(7,
-                                                                          includeMarkdown("versions.md")
-                                                                   )
-                                                                 )
-                                                        ) #tabPanel
+                                                        )
                                             ) #tabSetPanel
                                             
                                      )# column
