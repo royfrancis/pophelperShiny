@@ -3,6 +3,7 @@
 * 28-Dec-2020
 * Based on pophelper_v2.3.1
 * Error bars in first plot of Evanno method showed max/min rather than SD. Fixed to show SD.
+* Legend is now sorted numerically
 * Better CRAN compatibility
 
 # pophelperShiny 2.1.0

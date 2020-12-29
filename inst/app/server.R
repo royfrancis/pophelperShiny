@@ -2754,6 +2754,10 @@ shinyServer(function(input,output,session) {
     
     df1 <- dfa$df
     df1$x <- as.factor(df1$x)
+    # order legend numerically
+    if(all(grepl("Cluster",df1$group))){
+      df1$group <- factor(df1$group,levels=paste0("Cluster",sort(as.integer(unique(gsub("Cluster","",df1$group))))))
+    }
     
     hc <- df1 %>%
       hchart(.,"column",hcaes(x="x",y="y",group="group")) %>%
