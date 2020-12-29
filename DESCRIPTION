@@ -9,7 +9,7 @@ Maintainer: Roy Mathew Francis <roy.m.francis@outlook.com>
 Description: Interactive interface to pophelper using shiny web framework.
 URL: https://github.com/royfrancis/pophelperShiny
 Depends:
-    R(>= 3.5)
+    R(>= 3.6)
 Imports:
     colourpicker,
     DT,

@@ -36,7 +36,7 @@ The app should be available through your web browser at `http://0.0.0.0:8787`.
 
 ### Install locally
 
-You need to have the latest [JAVA JDK and JRE](http://www.oracle.com/technetwork/java/javase/downloads/index.html) installed on your system. You need to have R (>= 3.5) statistical package installed. [R](https://www.r-project.org/) is open-source and freely available to download for Windows, Mac and other OS. Then, basically run the code below. This installs the dependency packages, then it installs `pophelperShiny` from `github` using the `remotes` package.  
+You need to have the latest [JAVA JDK and JRE](http://www.oracle.com/technetwork/java/javase/downloads/index.html) installed on your system. You need to have R (>= 3.6) statistical package installed. [R](https://www.r-project.org/) is open-source and freely available to download for Windows, Mac and other OS. Then, basically run the code below. This installs the dependency packages, then it installs `pophelperShiny` from `github` using the `remotes` package.  
 
 ```coffee
 # install dependencies and remotes
