@@ -28,10 +28,6 @@ Imports:
     tidyr,
     viridisLite,
     writexl
-Suggests:
-    captioner,
-    knitr,
-    rmarkdown
 Remotes:
     royfrancis/pophelper
 License: GPL-3
