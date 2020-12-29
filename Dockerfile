@@ -1,7 +1,7 @@
 # DOCKER FILE FOR POPHELPERSHINY
 # 2021 Roy Francis
 
-FROM rocker/shiny:4.0.0
+FROM rocker/shiny:4.0.3
 LABEL Description="Docker image for R package pophelperShiny"
 LABEL Maintainer="roy.m.francis@outlook.com"
 
